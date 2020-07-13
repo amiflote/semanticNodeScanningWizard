@@ -4,4 +4,5 @@
       <span>{{concept.value}}</span>
   </div>
   </li>
+  <ngb-pagination [collectionSize]="conceptsCount" [(page)]="page" [maxSize]=5 aria-label="Default pagination" (pageChange)='onPaginationChange()'></ngb-pagination>
 </ul>
