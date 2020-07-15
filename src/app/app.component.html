@@ -1,8 +1,24 @@
-<ul>
-  <li *ngFor="let concept of concepts">
+<ul *ngIf="paso==1">
+  <li *ngFor="let graph of graphs" (click)='selectGraph(graph)'>
+    <div>
+      <span>{{graph}}</span>
+  </div>
+  </li>
+  <!-- <ngb-pagination [collectionSize]="graphsCount" [(page)]="graphsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onGraphPaginationChange()'></ngb-pagination> -->
+</ul>
+<ul *ngIf="paso==2">
+  <li *ngFor="let concept of concepts" (click)='selectConcept(concept.value)'>
     <div>
       <span>{{concept.value}}</span>
   </div>
   </li>
-  <ngb-pagination [collectionSize]="conceptsCount" [(page)]="page" [maxSize]=5 aria-label="Default pagination" (pageChange)='onPaginationChange()'></ngb-pagination>
+  <ngb-pagination [collectionSize]="conceptsCount" [(page)]="conceptsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onConceptPaginationChange()'></ngb-pagination>
+</ul>
+<ul *ngIf="paso==3">
+  <li *ngFor="let relation of relations">
+    <div>
+      <span>{{relation.value}}</span>
+  </div>
+  </li>
+  <ngb-pagination [collectionSize]="relationsCount" [(page)]="relationsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onRelationPaginationChange()'></ngb-pagination>
 </ul>

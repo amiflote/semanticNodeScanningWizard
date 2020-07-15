@@ -1,6 +1,7 @@
 import { Component, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { SparqlService } from './services/sparql.service';
 import { Concept } from './models/query-json-response.model';
+import { Relation } from './models/relation-query-json-response.model';
 
 @Component({
   selector: 'app-root',
@@ -9,28 +10,83 @@ import { Concept } from './models/query-json-response.model';
 })
 export class AppComponent {
   title = 'sparqlQueryEditor';
+  graphs: string[];
   concepts: Concept[];
-  @Input() page = 1;
+  relations: Relation[];
+  paso = 1;
+  graphsPage = 1;
+  conceptsPage = 1;
+  relationsPage = 1;
   pageSize = 50;
+  graphsCount: number;
   conceptsCount: number;
+  relationsCount: number;
+  graphSelected: string = null;
+  conceptSelected: string = null;
 
   constructor(private sparql: SparqlService) {
-    this.sparql.getCountConcepts().subscribe((data) => {
-      this.conceptsCount = data;
+    // this.sparql.getGraphsCount().subscribe((count) => {
+    //   this.graphsCount = count;
+    // });
+
+    this.sparql.getGraphs(this.conceptsPage, this.pageSize).subscribe((graphs) => {
+       this.graphs = graphs;
     });
-    
-    this.sparql.getConcepts(this.page, this.pageSize).subscribe((data) => {
-       this.concepts = data;
+  }
+
+  getGraphs() {
+    this.sparql.getGraphs(this.graphsPage, this.pageSize).subscribe((graphs) => {
+      this.graphs = graphs;
     });
   }
 
   getConcepts() {
-    this.sparql.getConcepts(this.page, this.pageSize).subscribe((data) => {
-      this.concepts = data;
+    this.sparql.getConcepts(this.graphSelected, this.conceptsPage, this.pageSize).subscribe((concepts) => {
+      this.concepts = concepts;
    });
   }
 
-  onPaginationChange() {
+  getRelations() {
+    this.sparql.getRelations(this.graphSelected, this.conceptSelected, this.relationsPage, this.pageSize).subscribe((relations) => {
+      this.relations = relations;
+    });
+  }
+
+  getConceptsCount() {
+    this.sparql.getCountConcepts().subscribe((count) => {
+      this.conceptsCount = count;
+    });
+  }
+
+  getRelationsCount() {
+    this.sparql.getCountRelations(this.graphSelected, this.conceptSelected).subscribe((count) => {
+      this.relationsCount = count;
+    });
+  }
+
+  onGraphPaginationChange() {
+    this.getGraphs();
+  }
+
+  onConceptPaginationChange() {
     this.getConcepts();
-  }  
+  }
+
+  onRelationPaginationChange() {
+    this.getRelations();
+  }
+  
+  selectGraph(graph: string) {
+    this.graphSelected = graph ? graph : null;
+    this.getConcepts();
+    this.getConceptsCount();
+    this.paso = 2;
+  }
+
+  selectConcept(concept: string) {
+    this.conceptSelected = concept ? concept : null;
+    this.getRelations();
+    this.getRelationsCount();
+    this.paso = 3;
+  }
 }
