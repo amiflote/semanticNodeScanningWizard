@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryJsonResponse, Concept } from '../models/query-json-response.model';
@@ -59,6 +59,10 @@ export class SparqlService {
 
     public testConnection(): Observable<QueryJsonResponse> {
         return this.http.get<QueryJsonResponse>('http://dbpedia.org/sparql?query=' + this.query +'&format=json');
+    }
+
+    public getSparqlQueryAsHtml(query: string): any {
+        return this.http.get('http://dbpedia.org/sparql?query=' + encodeURIComponent(query) +'&format=html', { responseType: 'text' })
     }
 
     private getGraphsQuery(page: number, pageSize: number): string {

@@ -1,24 +1,39 @@
-<ul *ngIf="paso==1">
-  <li *ngFor="let graph of graphs" (click)='selectGraph(graph)'>
-    <div>
-      <span>{{graph}}</span>
-  </div>
-  </li>
-  <!-- <ngb-pagination [collectionSize]="graphsCount" [(page)]="graphsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onGraphPaginationChange()'></ngb-pagination> -->
-</ul>
-<ul *ngIf="paso==2">
-  <li *ngFor="let concept of concepts" (click)='selectConcept(concept.value)'>
-    <div>
-      <span>{{concept.value}}</span>
-  </div>
-  </li>
-  <ngb-pagination [collectionSize]="conceptsCount" [(page)]="conceptsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onConceptPaginationChange()'></ngb-pagination>
-</ul>
-<ul *ngIf="paso==3">
-  <li *ngFor="let relation of relations">
-    <div>
-      <span>{{relation.value}}</span>
-  </div>
-  </li>
-  <ngb-pagination [collectionSize]="relationsCount" [(page)]="relationsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onRelationPaginationChange()'></ngb-pagination>
-</ul>
+<div *ngIf="html==''">
+  <ul *ngIf="paso==1">
+    <li *ngFor="let graph of graphs" (click)='selectGraph(graph)'>
+      <div>
+        <span>{{graph}}</span>
+      </div>
+    </li>
+    <!-- <ngb-pagination [collectionSize]="graphsCount" [(page)]="graphsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onGraphPaginationChange()'></ngb-pagination> -->
+  </ul>
+  <ul *ngIf="paso==2">
+    <li *ngFor="let concept of concepts" (click)='selectConcept(concept.value)'>
+      <div>
+        <span>{{concept.value}}</span>
+      </div>
+    </li>
+    <ngb-pagination [collectionSize]="conceptsCount" [(page)]="conceptsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onConceptPaginationChange()'></ngb-pagination>
+  </ul>
+  <ul *ngIf="paso==3">
+    <li *ngFor="let relation of relations">
+      <div>
+        <span>{{relation.value}}</span>
+      </div>
+    </li>
+    <ngb-pagination [collectionSize]="relationsCount" [(page)]="relationsPage" [maxSize]=5 aria-label="Default pagination" (pageChange)='onRelationPaginationChange()'></ngb-pagination>
+  </ul>
+<div>
+  <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <!-- <mat-label>Leave a comment</mat-label> -->
+      <textarea matInput (change)='setQuery($event)'></textarea>
+    </mat-form-field>
+    <button mat-button type='button' (click)="getSparqlQueryAsHtml()">  
+      Query Me
+    </button>
+  </form>
+</div>
+</div>
+<div *ngIf="html!=''" [innerHTML]="html">
+</div>

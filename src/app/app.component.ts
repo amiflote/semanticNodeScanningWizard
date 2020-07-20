@@ -23,6 +23,8 @@ export class AppComponent {
   relationsCount: number;
   graphSelected: string = null;
   conceptSelected: string = null;
+  query: string = '';
+  html: any = '';
 
   constructor(private sparql: SparqlService) {
     // this.sparql.getGraphsCount().subscribe((count) => {
@@ -62,6 +64,19 @@ export class AppComponent {
     this.sparql.getCountRelations(this.graphSelected, this.conceptSelected).subscribe((count) => {
       this.relationsCount = count;
     });
+  }
+
+  getSparqlQueryAsHtml(): any {
+    console.log('hola');
+    this.sparql.getSparqlQueryAsHtml(this.query).subscribe(
+      (html) => {
+        this.html = html;
+      }
+    )
+  }
+
+  setQuery(text: any) {
+    this.query = text.srcElement.value;
   }
 
   onGraphPaginationChange() {
