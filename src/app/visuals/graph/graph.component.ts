@@ -60,4 +60,8 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
       this.initializeGraph();
     }
   }
+
+  selectRelation(link) {
+    console.log(link);
+  }
 }

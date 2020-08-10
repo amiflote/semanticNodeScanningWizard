@@ -33,7 +33,7 @@ export class DbPediaService {
                         response.nodes[0].linkCount++;
                         response.nodes[response.nodes.length-1].linkCount++;
                         
-                        response.links.push(new Link(response.nodes[0], response.nodes[response.nodes.length-1]));
+                        response.links.push(new Link(response.nodes[0], response.nodes[response.nodes.length-1], b.relation.value));
                     }
                 );
 
