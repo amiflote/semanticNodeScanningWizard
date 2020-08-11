@@ -1,5 +1,8 @@
 import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, AfterViewInit, Injectable, OnChanges, SimpleChanges } from '@angular/core';
-import { D3Service, ForceDirectedGraph } from '../../d3';
+import { D3Service, ForceDirectedGraph, Link } from '../../d3';
+import { MatDialog } from '@angular/material/dialog';
+import { ChooseObjectDialogComponent } from '../dialogs/choose-object-dialog/choose-object-dialog.component';
+import { DbPediaService } from 'src/app/data-api/dbpedia.service';
 
 @Component({
   selector: 'graph',
@@ -24,7 +27,10 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
 
-  constructor(private d3Service: D3Service, private ref: ChangeDetectorRef) {}
+  constructor(private d3Service: D3Service,
+    private ref: ChangeDetectorRef,
+    public dialog: MatDialog,
+    private dbPediaService: DbPediaService) { }
 
   ngOnInit() {
     this.initializeGraph();
@@ -61,7 +67,29 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  selectRelation(link) {
+  selectRelation(link: Link) {
     console.log(link);
+
+    this.dbPediaService.relationSelected = link.name;
+    this.dbPediaService.objectSelected = link.target.name;
+
+    const dialogRef = this.dialog.open(ChooseObjectDialogComponent, {
+      width: '500px',
+      height: '100px',
+      data: { name: 'name', animal: 'animal' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (this.dbPediaService.objectInstanceSelected) {
+        this.dbPediaService.getActorsGraphQueried().subscribe(
+          (data) => {
+            this.links = data.links;
+            this.nodes = data.nodes;
+
+            this.initializeGraph();
+          }
+        );
+      }
+    });
   }
 }

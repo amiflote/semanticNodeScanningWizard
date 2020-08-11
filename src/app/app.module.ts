@@ -15,6 +15,9 @@ import { D3_DIRECTIVES } from './d3/directives';
 import { FormsModule } from '@angular/forms';
 import { D3Service } from './d3/d3.service';
 import { DbPediaService } from './data-api/dbpedia.service';
+import { ChooseObjectDialogComponent } from './visuals/dialogs/choose-object-dialog/choose-object-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -23,8 +26,9 @@ import { DbPediaService } from './data-api/dbpedia.service';
     LinkVisualComponent,
     NodeVisualComponent,
     ...SHARED_VISUALS,
-    ...D3_DIRECTIVES
-    ],
+    ...D3_DIRECTIVES,
+    ChooseObjectDialogComponent
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -34,7 +38,8 @@ import { DbPediaService } from './data-api/dbpedia.service';
     MatButtonModule,
     BrowserAnimationsModule,
     FormsModule,
-
+    MatDialogModule,
+    MatSelectModule
   ],
   providers: [D3Service, DbPediaService],
   bootstrap: [AppComponent]
