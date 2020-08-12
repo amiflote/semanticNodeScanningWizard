@@ -18,6 +18,10 @@ import { DbPediaService } from './data-api/dbpedia.service';
 import { ChooseObjectDialogComponent } from './visuals/dialogs/choose-object-dialog/choose-object-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { StartScreenComponent } from './start-screen/start-screen.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { DataGraphService } from './services/data-graph.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +31,8 @@ import { MatSelectModule } from '@angular/material/select';
     NodeVisualComponent,
     ...SHARED_VISUALS,
     ...D3_DIRECTIVES,
-    ChooseObjectDialogComponent
+    ChooseObjectDialogComponent,
+    StartScreenComponent
   ],
   imports: [
     BrowserModule,
@@ -39,9 +44,11 @@ import { MatSelectModule } from '@angular/material/select';
     BrowserAnimationsModule,
     FormsModule,
     MatDialogModule,
-    MatSelectModule
+    MatSelectModule,
+    MatIconModule,
+    MatListModule
   ],
-  providers: [D3Service, DbPediaService],
+  providers: [D3Service, DbPediaService, DataGraphService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

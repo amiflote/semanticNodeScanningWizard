@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Node, Link } from './d3';
 import { DbPediaService } from './data-api/dbpedia.service';
+import { DataGraphService } from './services/data-graph.service';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,9 @@ export class AppComponent implements OnInit {
   nodes: Node[] = [];
   links: Link[] = [];
 
-  constructor(private dbpediaService: DbPediaService) {
+  constructor(private dbpediaService: DbPediaService,
+    
+    public dataGraphService: DataGraphService) {
     // const N = APP_CONFIG.N,
     //   getIndex = number => number - 1;
 
@@ -34,12 +37,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dbpediaService.getActorGraph().subscribe(
-      (response) => {
-        this.nodes = response.nodes;
+    // this.dbpediaService.getActorGraph().subscribe(
+    //   (response) => {
+    //     this.nodes = response.nodes;
 
-        this.links = response.links;
+    //     this.links = response.links;
+    //   }
+    // );
+    this.dataGraphService.getRefreshGraph$().subscribe(
+      () => {
+        this.nodes = this.dataGraphService.nodes;
+        this.links = this.dataGraphService.links;
       }
     );
+
+    this.nodes.push(this.dbpediaService.getActorNode());
   }
 }

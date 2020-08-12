@@ -15,3 +15,8 @@
   font-weight: 300;
   fill: white;
 }
+
+.arrow { 
+  fill: #333; 
+  cursor: pointer;
+}

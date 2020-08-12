@@ -15,7 +15,7 @@ import { DbPediaService } from 'src/app/data-api/dbpedia.service';
     providedIn: 'root'
   }
 )
-export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
+export class GraphComponent implements OnInit, AfterViewInit {
   @Input('nodes') nodes;
   @Input('links') links;
   graph: ForceDirectedGraph;
@@ -26,13 +26,13 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
     this.graph.initSimulation(this.options);
   }
 
-
   constructor(private d3Service: D3Service,
     private ref: ChangeDetectorRef,
     public dialog: MatDialog,
     private dbPediaService: DbPediaService) { }
 
   ngOnInit() {
+    // this.dbPediaService.getActorNode();
     this.initializeGraph();
   }
 
@@ -83,13 +83,19 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.dbPediaService.objectInstanceSelected) {
         this.dbPediaService.getActorsGraphQueried().subscribe(
           (data) => {
-            this.links = data.links;
-            this.nodes = data.nodes;
+            // this.links = data.links;
+            // this.nodes = data.nodes;
 
             this.initializeGraph();
           }
         );
       }
     });
+  }
+
+  anyData(): boolean {
+    let result;
+    this.graph ? result = true : result = false;
+    return result 
   }
 }

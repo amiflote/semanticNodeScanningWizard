@@ -4,6 +4,7 @@ import { ActorGraphReponse } from './models/actor-graph.model';
 import { Node, Link } from 'src/app/d3';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DataGraphService } from '../services/data-graph.service';
 
 @Injectable()
 export class DbPediaService {
@@ -18,7 +19,8 @@ export class DbPediaService {
     objectSelected: string;
     objectInstanceSelected: string;
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient,
+        private dataGraphService: DataGraphService) { }
 
     public getActorGraph(): Observable<ActorGraphReponse> {
         return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.actorGraphQuery + '&format=json')
@@ -82,7 +84,7 @@ export class DbPediaService {
                     response.nodes[0].linkCount++;
                     response.nodes[1].linkCount++;
 
-                    response.links.push(new Link(response.nodes[0], response.nodes[ 1], this.relationSelected));
+                    response.links.push(new Link(response.nodes[0], response.nodes[1], this.relationSelected));
 
                     data.results.bindings.forEach(
                         b => {
@@ -107,11 +109,61 @@ export class DbPediaService {
             ));
     }
 
+    public getFilteredConcepts(filter: string): Observable<string[]> {
+        return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getFilteredConceptsQuery(filter) + '&format=json&timeout=60000')
+            .pipe(map(
+                (data) => {
+                    let concepts: string[] = [];
+
+                    data.results.bindings.forEach(
+                        (b) => {
+                            concepts.push(b.concept.value);
+                        }
+                    );
+
+                    return concepts;
+                }
+            ));
+    }
+
+    public getActorNode(): Node {
+        this.dataGraphService.addNode(this.actorUri);
+        //this.dataGraphService.canRefreshGraph();
+
+        return this.dataGraphService.findNode(this.actorUri);
+    }
+
+    public getRelations(uriNode: string): void {
+        this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getRelationsGivenUriNodeQuery(uriNode) + '&format=json&timeout=60000')
+            .subscribe(
+                (response) => {
+
+                    let givenNode = this.dataGraphService.findNode(uriNode);
+
+                    response.results.bindings.forEach(
+                        (b) => {
+                            let nuNode = this.dataGraphService.addNode(b.relation.value);
+                            this.dataGraphService.addLink(givenNode, nuNode, b.relation.value);
+                        });
+
+                    this.dataGraphService.canRefreshGraph();
+                }
+            );
+    }
+
     private getObjectListQuery(): string {
         return 'select distinct ?object where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?object } LIMIT 100'
     }
 
     private getActorInstancesQuery(): string {
         return 'select distinct ?actor where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ' + encodeURIComponent('<' + this.objectSelected + '>') + ' } LIMIT 1000'
+    }
+
+    private getFilteredConceptsQuery(filter: string) {
+        return 'select distinct ?concept where { ?x rdf:type ?concept. FILTER regex(?concept, "' + filter + '", "i") } LIMIT 100';
+    }
+
+    private getRelationsGivenUriNodeQuery(uriNode: string) {
+        return 'select distinct ?relation where { ?nodex ?relation ?nodey. ?nodey a ?concept. ?nodex a ' + encodeURIComponent('<' + uriNode + '>') + '}';
     }
 }

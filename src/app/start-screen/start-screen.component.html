@@ -1,0 +1,16 @@
+<h4>Repository: DbPedia</h4>
+<mat-form-field class="example-form-field">
+    <!-- <mat-label>Clearable input</mat-label> -->
+    <input matInput type="text" [(ngModel)]="value">
+    <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+        <mat-icon>Clear</mat-icon>
+    </button>
+    <button mat-button *ngIf="value" matSuffix mat-icon-button aria-label="Search" (click)="filterConcepts()">
+        <mat-icon>Search</mat-icon>
+    </button>
+</mat-form-field>
+<mat-selection-list [multiple]="false" *ngIf="concepts">
+    <mat-list-option *ngFor="let concept of concepts" [value]="concept">
+        {{concept}}
+    </mat-list-option>
+</mat-selection-list>
