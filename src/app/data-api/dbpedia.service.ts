@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ActorGraphReponse } from './models/actor-graph.model';
-import { Node, Link } from 'src/app/d3';
+import { Node, Link, NodeType } from 'src/app/d3';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DataGraphService } from '../services/data-graph.service';
@@ -22,43 +22,43 @@ export class DbPediaService {
     constructor(private http: HttpClient,
         private dataGraphService: DataGraphService) { }
 
-    public getActorGraph(): Observable<ActorGraphReponse> {
-        return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.actorGraphQuery + '&format=json')
-            .pipe(map(
-                (data) => {
-                    let response: ActorGraphReponse = new ActorGraphReponse();
+    // public getActorGraph(): Observable<ActorGraphReponse> {
+    //     return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.actorGraphQuery + '&format=json')
+    //         .pipe(map(
+    //             (data) => {
+    //                 let response: ActorGraphReponse = new ActorGraphReponse();
 
-                    let actorNode = new Node(1, this.actorUri);
+    //                 let actorNode = new Node(1, this.actorUri);
 
-                    response.nodes.push(actorNode);
+    //                 response.nodes.push(actorNode);
 
-                    data.results.bindings.forEach(
-                        b => {
-                            let nuNode = new Node(response.nodes.length + 1, b.objectType.value);
+    //                 data.results.bindings.forEach(
+    //                     b => {
+    //                         let nuNode = new Node(response.nodes.length + 1, b.objectType.value);
 
-                            response.nodes.push(nuNode);
+    //                         response.nodes.push(nuNode);
 
-                            response.nodes[0].linkCount++;
-                            response.nodes[response.nodes.length - 1].linkCount++;
+    //                         response.nodes[0].linkCount++;
+    //                         response.nodes[response.nodes.length - 1].linkCount++;
 
-                            response.links.push(new Link(response.nodes[0], response.nodes[response.nodes.length - 1], b.relation.value));
-                        }
-                    );
+    //                         response.links.push(new Link(response.nodes[0], response.nodes[response.nodes.length - 1], b.relation.value));
+    //                     }
+    //                 );
 
-                    return response;
-                }
-            ));
-    }
+    //                 return response;
+    //             }
+    //         ));
+    // }
 
     public getObjectList(): Observable<string[]> {
-        return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getObjectListQuery() + '&format=json')
+        return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getObjectListQuery() + '&format=json&timeout=60000')
             .pipe(map(
                 (data) => {
                     let objects: string[] = [];
 
                     data.results.bindings.forEach(
                         (o) => {
-                            objects.push(o.object.value);
+                            objects.push(o.concept.value);
                         }
                     );
 
@@ -67,47 +67,47 @@ export class DbPediaService {
             ));
     }
 
-    public getActorsGraphQueried(): Observable<ActorGraphReponse> {
-        return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getActorInstancesQuery() + '&format=json')
-            .pipe(map(
-                (data) => {
-                    let response: ActorGraphReponse = new ActorGraphReponse();
+    // public getActorsGraphQueried(): Observable<ActorGraphReponse> {
+    //     return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getActorInstancesQuery() + '&format=json')
+    //         .pipe(map(
+    //             (data) => {
+    //                 let response: ActorGraphReponse = new ActorGraphReponse();
 
-                    let actorNode = new Node(1, this.actorUri);
+    //                 let actorNode = new Node(1, this.actorUri);
 
-                    response.nodes.push(actorNode);
+    //                 response.nodes.push(actorNode);
 
-                    let objectNode = new Node(2, this.objectSelected);
+    //                 let objectNode = new Node(2, this.objectSelected);
 
-                    response.nodes.push(objectNode);
+    //                 response.nodes.push(objectNode);
 
-                    response.nodes[0].linkCount++;
-                    response.nodes[1].linkCount++;
+    //                 response.nodes[0].linkCount++;
+    //                 response.nodes[1].linkCount++;
 
-                    response.links.push(new Link(response.nodes[0], response.nodes[1], this.relationSelected));
+    //                 response.links.push(new Link(response.nodes[0], response.nodes[1], this.relationSelected));
 
-                    data.results.bindings.forEach(
-                        b => {
-                            let nuNode = new Node(response.nodes.length + 1, b.actor.value);
+    //                 data.results.bindings.forEach(
+    //                     b => {
+    //                         let nuNode = new Node(response.nodes.length + 1, b.actor.value);
 
-                            response.nodes.push(nuNode);
+    //                         response.nodes.push(nuNode);
 
-                            response.nodes[0].linkCount++;
-                            response.nodes[response.nodes.length - 1].linkCount++;
+    //                         response.nodes[0].linkCount++;
+    //                         response.nodes[response.nodes.length - 1].linkCount++;
 
-                            response.links.push(new Link(response.nodes[0], response.nodes[response.nodes.length - 1], 'a'));
+    //                         response.links.push(new Link(response.nodes[0], response.nodes[response.nodes.length - 1], 'a'));
 
-                            response.nodes[1].linkCount++;
-                            response.nodes[response.nodes.length - 1].linkCount++;
+    //                         response.nodes[1].linkCount++;
+    //                         response.nodes[response.nodes.length - 1].linkCount++;
 
-                            response.links.push(new Link(response.nodes[1], response.nodes[response.nodes.length - 1], this.relationSelected));
-                        }
-                    );
+    //                         response.links.push(new Link(response.nodes[1], response.nodes[response.nodes.length - 1], this.relationSelected));
+    //                     }
+    //                 );
 
-                    return response;
-                }
-            ));
-    }
+    //                 return response;
+    //             }
+    //         ));
+    // }
 
     public getFilteredConcepts(filter: string): Observable<string[]> {
         return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getFilteredConceptsQuery(filter) + '&format=json&timeout=60000')
@@ -127,7 +127,7 @@ export class DbPediaService {
     }
 
     public getActorNode(): Node {
-        this.dataGraphService.addNode(this.actorUri);
+        this.dataGraphService.addNode(this.actorUri, NodeType.Concepto);
         //this.dataGraphService.canRefreshGraph();
 
         return this.dataGraphService.findNode(this.actorUri);
@@ -142,7 +142,7 @@ export class DbPediaService {
 
                     response.results.bindings.forEach(
                         (b) => {
-                            let nuNode = this.dataGraphService.addNode(b.relation.value);
+                            let nuNode = this.dataGraphService.addNode(b.relation.value, NodeType.Expansible);
                             this.dataGraphService.addLink(givenNode, nuNode, b.relation.value);
                         });
 
@@ -152,7 +152,7 @@ export class DbPediaService {
     }
 
     private getObjectListQuery(): string {
-        return 'select distinct ?object where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?object } LIMIT 100'
+        return 'select distinct ?concept where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?object . ?object a ?concept } LIMIT 5'
     }
 
     private getActorInstancesQuery(): string {
@@ -164,6 +164,6 @@ export class DbPediaService {
     }
 
     private getRelationsGivenUriNodeQuery(uriNode: string) {
-        return 'select distinct ?relation where { ?nodex ?relation ?nodey. ?nodey a ?concept. ?nodex a ' + encodeURIComponent('<' + uriNode + '>') + '}';
+        return 'select distinct ?relation where { ?nodex ?relation ?nodey. ?nodey a ?concept. ?nodex a ' + encodeURIComponent('<' + uriNode + '>') + '} LIMIT 5';
     }
 }

@@ -1,6 +1,6 @@
 <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
-    <svg:path class="arrow" d="M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z "transform="translate(31,-20) rotate(180) scale(0.1,0.1)" (click)="onArrowClick()"></svg:path>
-    <svg:circle class="node" [attr.fill]="node.color" cx="0" cy="0" [attr.r]="node.r">
+    <svg:path *ngIf="showArrow()" class="arrow" d="M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z "transform="translate(31,-20) rotate(180) scale(0.1,0.1)" (click)="onArrowClick()"></svg:path>
+    <svg:circle class="node" [attr.fill]="node.color" cx="0" cy="0" [attr.r]="node.r" (click)="selectNode(node)">
     </svg:circle>
     <svg:text class="node-name" [attr.font-size]="node.fontSize">
         {{node.name}}

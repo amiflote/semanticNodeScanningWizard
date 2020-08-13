@@ -1,5 +1,15 @@
 import APP_CONFIG from '../../app.config';
 
+export enum NodeType {
+  Concepto,
+  Expansible
+}
+
+export enum NodeState {
+  Nuevo,
+  Expandido
+}
+
 export class Node implements d3.SimulationNodeDatum {
   // optional - defining optional implementation properties - required for relevant typing assistance
   index?: number;
@@ -14,10 +24,14 @@ export class Node implements d3.SimulationNodeDatum {
   name: string;
   displayName: string;
   linkCount: number = 0;
+  type: NodeType;
+  state: NodeState;
 
-  constructor(id, name?) {
+  constructor(id, type: NodeType, name?) {
     this.id = id;
+    this.type = type;
     this.name = name;
+    this.state = NodeState.Nuevo;
   }
 
   normal = () => {
@@ -25,7 +39,7 @@ export class Node implements d3.SimulationNodeDatum {
   }
 
   get r() {
-    return 500 * this.normal() + 10;
+    return 30; //* this.normal() + 10;
   }
 
   get fontSize() {
@@ -33,7 +47,7 @@ export class Node implements d3.SimulationNodeDatum {
   }
 
   get color() {
-    let index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
-    return APP_CONFIG.SPECTRUM[index];
+    //let index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
+    return APP_CONFIG.SPECTRUM[this.type];
   }
 }

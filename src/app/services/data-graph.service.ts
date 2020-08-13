@@ -1,4 +1,4 @@
-import { Link, Node } from '../d3/models';
+import { Link, Node, NodeType } from '../d3/models';
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
@@ -17,8 +17,8 @@ export class DataGraphService {
         return this.idCounter;
     }
 
-    addNode(name: string): Node {
-        let nuNode = new Node(this.idCounter, name);
+    addNode(name: string, type: NodeType): Node {
+        let nuNode = new Node(this.idCounter, type, name);
         this.nodes.push(nuNode);
         this.idCounter++;
         return nuNode;

@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, AfterViewInit, Injectable, OnChanges, SimpleChanges } from '@angular/core';
-import { D3Service, ForceDirectedGraph, Link } from '../../d3';
+import { D3Service, ForceDirectedGraph, Link, Node } from '../../d3';
 import { MatDialog } from '@angular/material/dialog';
 import { ChooseObjectDialogComponent } from '../dialogs/choose-object-dialog/choose-object-dialog.component';
 import { DbPediaService } from 'src/app/data-api/dbpedia.service';
@@ -81,14 +81,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (this.dbPediaService.objectInstanceSelected) {
-        this.dbPediaService.getActorsGraphQueried().subscribe(
-          (data) => {
-            // this.links = data.links;
-            // this.nodes = data.nodes;
+        // this.dbPediaService.getActorsGraphQueried().subscribe(
+        //   (data) => {
+        //     // this.links = data.links;
+        //     // this.nodes = data.nodes;
 
-            this.initializeGraph();
-          }
-        );
+        //     this.initializeGraph();
+        //   }
+        // );
       }
     });
   }
