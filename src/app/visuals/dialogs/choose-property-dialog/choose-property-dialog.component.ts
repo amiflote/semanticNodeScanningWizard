@@ -9,41 +9,42 @@ export interface DialogChooseObject {
 }
 
 @Component({
-  selector: 'app-choose-object-dialog',
-  templateUrl: './choose-object-dialog.component.html',
-  styleUrls: ['./choose-object-dialog.component.css']
+  selector: 'app-choose-property-dialog',
+  templateUrl: './choose-property-dialog.component.html',
+  styleUrls: ['./choose-property-dialog.component.css']
 })
-export class ChooseObjectDialogComponent implements OnInit {
+export class ChoosePropertyDialogComponent implements OnInit {
 
-  objects: string[] = [];
+  properties: string[] = [];
   title: string;
   relation: string;
 
   constructor(
     public dialogRef: MatDialogRef<AppComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogChooseObject,
-    private dbPediaService: DbPediaService) { }
+    private dbPediaService: DbPediaService) {
+    this.getPropertyList();
+    this.title = this.dbPediaService.subjectSelected;
+    this.relation = this.dbPediaService.relationSelected;
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
   ngOnInit(): void {
-    this.getObjectList();
-    this.title = this.dbPediaService.subjectSelected;
-    this.relation = this.dbPediaService.relationSelected;
   }
 
-  getObjectList() {
-    this.dbPediaService.getObjectList().subscribe(
+  getPropertyList() {
+    this.dbPediaService.getPropertyList().subscribe(
       (response) => {
-        this.objects = response;
+        this.properties = response;
       }
     );
   }
 
-  onOptionSelected(object) {
+  onOptionSelected(relation) {
     // console.log(object);
-    if (object)
-      this.dbPediaService.relationConceptSelected = object;
+    if (relation)
+      this.dbPediaService.propertyConceptSelected = relation;
   }
 }

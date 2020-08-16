@@ -2,7 +2,8 @@ import APP_CONFIG from '../../app.config';
 
 export enum NodeType {
   Concepto,
-  Expansible
+  Expansible,
+  Literal
 }
 
 export enum NodeState {
@@ -22,7 +23,9 @@ export class Node implements d3.SimulationNodeDatum {
 
   id: string;
   name: string;
-  displayName: string;
+  displayName = () => {
+    return this.name.substr(this.name.lastIndexOf('/')+1);
+  };
   linkCount: number = 0;
   type: NodeType;
   state: NodeState;

@@ -9,14 +9,14 @@
 }
 
 .node-name {
-  font-family: 'Lato';
+  font-family: monospace;
   text-anchor: middle;
   alignment-baseline: central;
-  font-weight: 300;
-  fill: white;
+  font-weight: 100;
+  fill: red;
 }
 
 .arrow { 
-  fill: #333; 
+  fill: red; 
   cursor: pointer;
 }

@@ -3,6 +3,7 @@ import { D3Service, ForceDirectedGraph, Link, Node } from '../../d3';
 import { MatDialog } from '@angular/material/dialog';
 import { ChooseObjectDialogComponent } from '../dialogs/choose-object-dialog/choose-object-dialog.component';
 import { DbPediaService } from 'src/app/data-api/dbpedia.service';
+import { DataGraphService } from 'src/app/services/data-graph.service';
 
 @Component({
   selector: 'graph',
@@ -29,15 +30,25 @@ export class GraphComponent implements OnInit, AfterViewInit {
   constructor(private d3Service: D3Service,
     private ref: ChangeDetectorRef,
     public dialog: MatDialog,
-    private dbPediaService: DbPediaService) { }
+    private dbPediaService: DbPediaService,
+    private dataGraphService: DataGraphService) { }
 
   ngOnInit() {
     // this.dbPediaService.getActorNode();
     this.initializeGraph();
+
+    this.dataGraphService.getRefreshGraph$().subscribe(
+      () => {
+        // this.initializeGraph();
+        // this.graph.updateLinks(this.links);
+        this.graph.initNodes();
+        this.graph.initLinks();
+      }
+    )
   }
 
   ngAfterViewInit() {
-    this.graph.initSimulation(this.options);
+    // this.graph.initSimulation(this.options);
   }
 
   get options() {
@@ -67,35 +78,35 @@ export class GraphComponent implements OnInit, AfterViewInit {
     }
   }
 
-  selectRelation(link: Link) {
-    console.log(link);
+  // selectRelation(link: Link) {
+  //   console.log(link);
 
-    this.dbPediaService.relationSelected = link.name;
-    this.dbPediaService.objectSelected = link.target.name;
+  //   this.dbPediaService.relationSelected = link.name;
+  //   this.dbPediaService.objectSelected = link.target.name;
 
-    const dialogRef = this.dialog.open(ChooseObjectDialogComponent, {
-      width: '500px',
-      height: '100px',
-      data: { name: 'name', animal: 'animal' }
-    });
+  //   const dialogRef = this.dialog.open(ChooseObjectDialogComponent, {
+  //     width: '500px',
+  //     height: '100px',
+  //     data: { name: 'name', animal: 'animal' }
+  //   });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (this.dbPediaService.objectInstanceSelected) {
-        // this.dbPediaService.getActorsGraphQueried().subscribe(
-        //   (data) => {
-        //     // this.links = data.links;
-        //     // this.nodes = data.nodes;
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if (this.dbPediaService.objectInstanceSelected) {
+  //       // this.dbPediaService.getActorsGraphQueried().subscribe(
+  //       //   (data) => {
+  //       //     // this.links = data.links;
+  //       //     // this.nodes = data.nodes;
 
-        //     this.initializeGraph();
-        //   }
-        // );
-      }
-    });
-  }
+  //       //     this.initializeGraph();
+  //       //   }
+  //       // );
+  //     }
+  //   });
+  // }
 
-  anyData(): boolean {
-    let result;
-    this.graph ? result = true : result = false;
-    return result 
-  }
+  // anyData(): boolean {
+  //   let result;
+  //   this.graph ? result = true : result = false;
+  //   return result 
+  // }
 }

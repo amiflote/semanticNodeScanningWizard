@@ -4,6 +4,7 @@ import { DbPediaService } from 'src/app/data-api/dbpedia.service';
 import { DataGraphService } from 'src/app/services/data-graph.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChooseObjectDialogComponent } from '../../dialogs/choose-object-dialog/choose-object-dialog.component';
+import { ChoosePropertyDialogComponent } from '../../dialogs/choose-property-dialog/choose-property-dialog.component';
 
 @Component({
   selector: '[nodeVisual]',
@@ -47,8 +48,8 @@ export class NodeVisualComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (this.dbPediaService.objectInstanceSelected) {
-        this.dataGraphService.findNode(this.node.name).name = this.dbPediaService.objectInstanceSelected;
+      if (this.dbPediaService.relationConceptSelected) {
+        this.dataGraphService.findNode(this.node.name).name = this.dbPediaService.relationConceptSelected;
 
         //this.node.name = this.dbPediaService.objectInstanceSelected;
         //this.node.state = NodeState.
@@ -64,4 +65,40 @@ export class NodeVisualComponent implements OnInit {
       }
     });
   }
+
+  selectDataNode(node: Node): void {
+
+    //this.dbPediaService.relationSelected = node.name;
+
+    const dialogRef = this.dialog.open(ChoosePropertyDialogComponent, {
+      width: '500px',
+      height: '100px',
+      data: { name: 'name', animal: 'animal' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (this.dbPediaService.propertyConceptSelected) {
+        // this.dataGraphService.findNode(this.node.name).name = this.dbPediaService.relationConceptSelected;
+
+        let nuNode = this.dataGraphService.addNode(this.dbPediaService.propertyConceptSelected, NodeType.Literal);
+        this.dataGraphService.addLink(this.node, nuNode, nuNode.name);
+
+        //this.node.name = this.dbPediaService.objectInstanceSelected;
+        //this.node.state = NodeState.
+        this.dataGraphService.canRefreshGraph();
+        // this.dbPediaService.getActorsGraphQueried().subscribe(
+        //   (data) => {
+        //     // this.links = data.links;
+        //     // this.nodes = data.nodes;
+
+        //     this.initializeGraph();
+        //   }
+        // );
+      }
+    });
+  }
+
+  // getData(node: Node) {
+  //   console.log("Data");
+  // }
 }

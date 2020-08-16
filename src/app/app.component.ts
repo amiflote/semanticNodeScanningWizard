@@ -14,7 +14,6 @@ export class AppComponent implements OnInit {
   links: Link[] = [];
 
   constructor(private dbpediaService: DbPediaService,
-    
     public dataGraphService: DataGraphService) {
     // const N = APP_CONFIG.N,
     //   getIndex = number => number - 1;
@@ -44,13 +43,24 @@ export class AppComponent implements OnInit {
     //     this.links = response.links;
     //   }
     // );
-    this.dataGraphService.getRefreshGraph$().subscribe(
-      () => {
+    // this.dataGraphService.getRefreshGraph$().subscribe(
+    //   () => {
         this.nodes = this.dataGraphService.nodes;
         this.links = this.dataGraphService.links;
-      }
-    );
 
-    this.nodes.push(this.dbpediaService.getActorNode());
+    //     // this.nodes.forEach(
+    //     //   (n) => {
+    //     //     n.vx = undefined,
+    //     //     n.vy = undefined,
+    //     //     n.x = undefined,
+    //     //     n.y = undefined
+    //     //   }
+    //     // );
+    //   }
+    // );
+    
+
+    this.dbpediaService.addActorNode();
+    // this.nodes.push();
   }
 }

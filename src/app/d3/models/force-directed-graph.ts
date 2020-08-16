@@ -93,4 +93,16 @@ export class ForceDirectedGraph {
     /** Restarting the simulation internal timer */
     this.simulation.restart();
   }
+
+  updateLinks(links: Link[]) {
+    this.simulation.force('links',
+      d3.forceLink(links)
+        .id(d => d['id'])
+        .strength(FORCES.LINKS)
+    );
+  }
+
+  updateNodes(nodes: Node[]) {
+
+  }
 }
