@@ -5,6 +5,7 @@ import { DataGraphService } from 'src/app/services/data-graph.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChooseObjectDialogComponent } from '../../dialogs/choose-object-dialog/choose-object-dialog.component';
 import { ChoosePropertyDialogComponent } from '../../dialogs/choose-property-dialog/choose-property-dialog.component';
+import { TypeLiteralDialogComponent } from '../../dialogs/type-literal-dialog/type-literal-dialog.component';
 
 @Component({
   selector: '[nodeVisual]',
@@ -13,11 +14,12 @@ import { ChoosePropertyDialogComponent } from '../../dialogs/choose-property-dia
 })
 export class NodeVisualComponent implements OnInit {
   @Input('nodeVisual') node: Node;
+  literal: string = '';
 
   constructor(private dbPediaService: DbPediaService,
     private dataGraphService: DataGraphService,
     public dialog: MatDialog
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     // let node = this.dataGraphService.positions.find(n => n.name == this.node.name);
@@ -26,7 +28,7 @@ export class NodeVisualComponent implements OnInit {
     // this.node.y = node.y;
   }
 
-  onArrowClick(){
+  onArrowClick() {
     console.log("arrow clicked");
 
     this.dbPediaService.getRelations(this.node.name);
@@ -39,66 +41,67 @@ export class NodeVisualComponent implements OnInit {
 
   selectNode(node: Node): void {
 
-    this.dbPediaService.relationSelected = node.name;
+    if (node.type != NodeType.Literal && node.type != NodeType.InstanceCount) {
 
-    const dialogRef = this.dialog.open(ChooseObjectDialogComponent, {
-      width: '500px',
-      height: '100px',
-      data: { name: 'name', animal: 'animal' }
-    });
+      this.dbPediaService.relationSelected = node.name;
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (this.dbPediaService.relationConceptSelected) {
-        this.dataGraphService.findNode(this.node.name).name = this.dbPediaService.relationConceptSelected;
+      const dialogRef = this.dialog.open(ChooseObjectDialogComponent, {
+        width: '500px',
+        height: '100px',
+        data: { name: 'name', animal: 'animal' }
+      });
 
-        //this.node.name = this.dbPediaService.objectInstanceSelected;
-        //this.node.state = NodeState.
-        this.dataGraphService.canRefreshGraph();
-        // this.dbPediaService.getActorsGraphQueried().subscribe(
-        //   (data) => {
-        //     // this.links = data.links;
-        //     // this.nodes = data.nodes;
+      dialogRef.afterClosed().subscribe(result => {
+        if (this.dbPediaService.relationConceptSelected) {
+          this.dataGraphService.findNode(this.node.name).name = this.dbPediaService.relationConceptSelected;
+          this.dataGraphService.canRefreshGraph();
+        }
+      });
+    }
+    else if (node.type == NodeType.Literal) {
+      const dialogRef = this.dialog.open(TypeLiteralDialogComponent, {
+        width: '500px',
+        height: '100px',
+        data: { name: 'name', animal: 'animal' }
+      });
 
-        //     this.initializeGraph();
-        //   }
-        // );
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (this.dbPediaService.literalTyped) {
+          this.dataGraphService.findNode(this.node.name).name = this.dbPediaService.literalTyped;
+          this.dataGraphService.canRefreshGraph();
+        }
+      });
+    }
+    else if (node.type == NodeType.InstanceCount) {
+      this.dataGraphService.hideNode(node.id);
+      this.dbPediaService.getInstances();
+    }
   }
 
   selectDataNode(node: Node): void {
 
-    //this.dbPediaService.relationSelected = node.name;
+    if (node.type != NodeType.Literal) {
 
-    const dialogRef = this.dialog.open(ChoosePropertyDialogComponent, {
-      width: '500px',
-      height: '100px',
-      data: { name: 'name', animal: 'animal' }
-    });
+      const dialogRef = this.dialog.open(ChoosePropertyDialogComponent, {
+        width: '500px',
+        height: '100px',
+        data: { name: 'name', animal: 'animal' }
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (this.dbPediaService.propertyConceptSelected) {
-        // this.dataGraphService.findNode(this.node.name).name = this.dbPediaService.relationConceptSelected;
+      dialogRef.afterClosed().subscribe(result => {
+        if (this.dbPediaService.propertyConceptSelected) {
 
-        let nuNode = this.dataGraphService.addNode(this.dbPediaService.propertyConceptSelected, NodeType.Literal);
-        this.dataGraphService.addLink(this.node, nuNode, nuNode.name);
+          let nuNode = this.dataGraphService.addNode(this.dbPediaService.propertyConceptSelected, NodeType.Literal);
+          this.dataGraphService.addLink(this.node, nuNode, nuNode.name);
 
-        //this.node.name = this.dbPediaService.objectInstanceSelected;
-        //this.node.state = NodeState.
-        this.dataGraphService.canRefreshGraph();
-        // this.dbPediaService.getActorsGraphQueried().subscribe(
-        //   (data) => {
-        //     // this.links = data.links;
-        //     // this.nodes = data.nodes;
+          this.dataGraphService.canRefreshGraph();
 
-        //     this.initializeGraph();
-        //   }
-        // );
-      }
-    });
+        }
+      });
+    }
+    else {
+      if (this.dbPediaService.literalTyped)
+        this.dbPediaService.getNumberOfInstances();
+    }
   }
-
-  // getData(node: Node) {
-  //   console.log("Data");
-  // }
 }

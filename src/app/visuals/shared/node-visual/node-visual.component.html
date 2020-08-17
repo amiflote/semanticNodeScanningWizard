@@ -9,7 +9,7 @@
     <svg:g [attr.transform]="'translate(' + -25 + ',' + 20 + ')'" (click)="selectDataNode(node)" style="cursor: pointer;">
         <rect rx="5" ry="10" width="50" height="15" style="fill:goldenrod;stroke:black;stroke-width:1"/>
         <svg:text class="node-name" [attr.font-size]="node.fontSize" x="25" y="7.5">
-            Data
+           {{node.type != 2 ? 'Data' : 'Search'}} 
         </svg:text>
     </svg:g>
 </svg:g>

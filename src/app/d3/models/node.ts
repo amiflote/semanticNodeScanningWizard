@@ -3,12 +3,15 @@ import APP_CONFIG from '../../app.config';
 export enum NodeType {
   Concepto,
   Expansible,
-  Literal
+  Literal,
+  InstanceCount,
+  Instance
 }
 
 export enum NodeState {
   Nuevo,
-  Expandido
+  Expandido,
+  Oculto
 }
 
 export class Node implements d3.SimulationNodeDatum {

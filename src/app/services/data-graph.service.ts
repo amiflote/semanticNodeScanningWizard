@@ -1,4 +1,4 @@
-import { Link, Node, NodeType } from '../d3/models';
+import { Link, Node, NodeType, NodeState } from '../d3/models';
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
@@ -52,23 +52,7 @@ export class DataGraphService {
         return this.nodes.length > 0;
     }
 
-    // savePositions() {
-    //     this.nodes.forEach(n => {
-    //         let nuNode: Node = {
-    //             color: n.color,
-    //             displayName: n.displayName,
-    //             fontSize: n.fontSize,
-    //             id: n.id,
-    //             linkCount: n.linkCount,
-    //             name: n.name,
-    //             normal: n.normal,
-    //             r: n.r,
-    //             x: n.x,
-    //             y: n.y,
-    //             vx: n.vx,
-    //             vy: n.vy
-    //         }
-    //         this.positions.push(nuNode);
-    //     });
-    // }
+    hideNode(id: string): void {
+        this.nodes.find(n => n.id == id).state == NodeState.Oculto;
+    }
 }

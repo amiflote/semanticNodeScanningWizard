@@ -19,37 +19,28 @@ export class DbPediaService {
     //objectSelected: string;
     relationConceptSelected: string;
     propertyConceptSelected: string;
+    literalTyped: string;
 
     constructor(private http: HttpClient,
         private dataGraphService: DataGraphService) { }
 
-    // public getActorGraph(): Observable<ActorGraphReponse> {
-    //     return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.actorGraphQuery + '&format=json')
-    //         .pipe(map(
-    //             (data) => {
-    //                 let response: ActorGraphReponse = new ActorGraphReponse();
+    public getInstances(): void {
+        this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getInstancesQuery() + '&format=json&timeout=60000')
+            .subscribe(
+                (response) => {
 
-    //                 let actorNode = new Node(1, this.actorUri);
+                    let givenNode = this.dataGraphService.findNode(this.actorUri);
 
-    //                 response.nodes.push(actorNode);
+                    response.results.bindings.forEach(
+                        (b) => {
+                            let nuNode = this.dataGraphService.addNode(b.datanode.value, NodeType.Instance);
+                            this.dataGraphService.addLink(nuNode, givenNode, 'rdf:type');
+                        });
 
-    //                 data.results.bindings.forEach(
-    //                     b => {
-    //                         let nuNode = new Node(response.nodes.length + 1, b.objectType.value);
-
-    //                         response.nodes.push(nuNode);
-
-    //                         response.nodes[0].linkCount++;
-    //                         response.nodes[response.nodes.length - 1].linkCount++;
-
-    //                         response.links.push(new Link(response.nodes[0], response.nodes[response.nodes.length - 1], b.relation.value));
-    //                     }
-    //                 );
-
-    //                 return response;
-    //             }
-    //         ));
-    // }
+                    this.dataGraphService.canRefreshGraph();
+                }
+            );
+    }
 
     public getObjectList(): Observable<string[]> {
         return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getObjectListQuery() + '&format=json&timeout=60000')
@@ -169,6 +160,26 @@ export class DbPediaService {
             );
     }
 
+    public getNumberOfInstances(): void {
+        this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getNumberOfInstancesQuery() + '&format=json&timeout=60000')
+            .subscribe(
+                (response) => {
+
+                    let actorNode = this.dataGraphService.findNode(this.actorUri);
+
+                    response.results.bindings.forEach(
+                        (b) => {
+                            let nodeId = this.dataGraphService.nextNodeId();
+                            let nodeName = nodeId + '/' + b.count.value + ' instances';
+                            let nuNode = this.dataGraphService.addNode(nodeName, NodeType.InstanceCount);
+                            this.dataGraphService.addLink(actorNode, nuNode, 'rdf:type');
+                        });
+
+                    this.dataGraphService.canRefreshGraph();
+                }
+            );
+    }
+
     private getObjectListQuery(): string {
         return 'select distinct ?concept where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?object . ?object a ?concept } LIMIT 5'
     }
@@ -181,11 +192,19 @@ export class DbPediaService {
     //     return 'select distinct ?actor where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ' + encodeURIComponent('<' + this.objectSelected + '>') + ' } LIMIT 1000'
     // }
 
-    private getFilteredConceptsQuery(filter: string) {
+    private getFilteredConceptsQuery(filter: string): string {
         return 'select distinct ?concept where { ?x rdf:type ?concept. FILTER regex(?concept, "' + filter + '", "i") } LIMIT 100';
     }
 
-    private getRelationsGivenUriNodeQuery(uriNode: string) {
+    private getRelationsGivenUriNodeQuery(uriNode: string): string {
         return 'select distinct ?relation where { ?nodex ?relation ?nodey. ?nodey a ?concept. ?nodex a ' + encodeURIComponent('<' + uriNode + '>') + '} LIMIT 5';
+    }
+
+    private getNumberOfInstancesQuery(): string {
+        return 'select count (distinct ?datanode) as ?count where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i") }'
+    }
+
+    private getInstancesQuery(): string {
+        return 'select distinct ?datanode where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i") }'
     }
 }
