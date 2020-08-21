@@ -1,11 +1,17 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppComponent } from 'src/app/app.component';
-import { DbPediaService } from 'src/app/data-api/dbpedia.service';
+
+export enum DialogType {
+  PickFromList,
+  TypeValue
+}
 
 export interface DialogChooseObject {
-  objectUriSelected: string;
-  name: string;
+  title: string;
+  description: string;
+  type: DialogType;
+  values?: Map<string, string>;
 }
 
 @Component({
@@ -15,35 +21,36 @@ export interface DialogChooseObject {
 })
 export class ChooseObjectDialogComponent implements OnInit {
 
-  objects: string[] = [];
-  title: string;
-  relation: string;
+  optionSelected: string;
+  literal: string;
 
   constructor(
     public dialogRef: MatDialogRef<AppComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogChooseObject,
-    private dbPediaService: DbPediaService) { }
+    @Inject(MAT_DIALOG_DATA) public data: DialogChooseObject) { }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
-  ngOnInit(): void {
-    this.getObjectList();
-    this.title = this.dbPediaService.subjectSelected;
-    this.relation = this.dbPediaService.relationSelected;
+
+  onOkClick(): void {
+    let result: any;
+
+    if (this.optionSelected)
+      result = [this.optionSelected, this.data.values.get(this.optionSelected)];
+    else if (this.literal)
+      result = this.literal;
+
+    this.dialogRef.close(result);
   }
 
-  getObjectList() {
-    this.dbPediaService.getObjectList().subscribe(
-      (response) => {
-        this.objects = response;
-      }
-    );
-  }
+  ngOnInit(): void { }
 
   onOptionSelected(object) {
-    // console.log(object);
     if (object)
-      this.dbPediaService.relationConceptSelected = object;
+      this.optionSelected = object;
+  }
+
+  showPickList(): boolean {
+    return this.data.type == DialogType.PickFromList;
   }
 }

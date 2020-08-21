@@ -9,11 +9,15 @@ export class Link implements d3.SimulationLinkDatum<Node> {
   target: Node;// | string | number;
 
   name: string;
-  displayName: string;
+  label: string;
+  displayName = () => {
+    return this.label[0].toUpperCase() + this.label.substr(1).toLowerCase();
+  };
 
-  constructor(source, target, name: string) {
+  constructor(source, target, name: string, label: string) {
     this.source = source;
     this.target = target;
     this.name = name;
+    this.label = label;
   }
 }

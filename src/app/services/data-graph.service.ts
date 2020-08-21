@@ -17,8 +17,8 @@ export class DataGraphService {
         return this.idCounter;
     }
 
-    addNode(name: string, type: NodeType): Node {
-        let nuNode = new Node(this.idCounter, type, name);
+    addNode(name: string, type: NodeType, label: string): Node {
+        let nuNode = new Node(this.idCounter, type, name, label);
         this.nodes.push(nuNode);
         this.idCounter++;
         return nuNode;
@@ -32,8 +32,8 @@ export class DataGraphService {
         return this.links.find(l => l.name == name);
     }
     
-    addLink(source: Node, target: Node, name?: string): Link {
-        let nuLink = new Link(source, target, name);
+    addLink(source: Node, target: Node, name: string, label: string): Link {
+        let nuLink = new Link(source, target, name, label);
         source.linkCount++;
         target.linkCount++;
         this.links.push(nuLink);

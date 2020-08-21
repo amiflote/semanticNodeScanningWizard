@@ -22,8 +22,6 @@ import { StartScreenComponent } from './start-screen/start-screen.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { DataGraphService } from './services/data-graph.service';
-import { ChoosePropertyDialogComponent } from './visuals/dialogs/choose-property-dialog/choose-property-dialog.component';
-import { TypeLiteralDialogComponent } from './visuals/dialogs/type-literal-dialog/type-literal-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,9 +32,7 @@ import { TypeLiteralDialogComponent } from './visuals/dialogs/type-literal-dialo
     ...SHARED_VISUALS,
     ...D3_DIRECTIVES,
     ChooseObjectDialogComponent,
-    StartScreenComponent,
-    ChoosePropertyDialogComponent,
-    TypeLiteralDialogComponent
+    StartScreenComponent
   ],
   imports: [
     BrowserModule,

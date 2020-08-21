@@ -1,11 +1,13 @@
 import APP_CONFIG from '../../app.config';
 
 export enum NodeType {
+  ConceptoPrincipal,
   Concepto,
-  Expansible,
-  Literal,
+  LiteralVacio,
+  LiteralRelleno,
   InstanceCount,
-  Instance
+  Instance,
+  SinExplorar
 }
 
 export enum NodeState {
@@ -27,17 +29,21 @@ export class Node implements d3.SimulationNodeDatum {
   id: string;
   name: string;
   displayName = () => {
-    return this.name.substr(this.name.lastIndexOf('/')+1);
+    let dn;
+    this.type == NodeType.SinExplorar || this.type == NodeType.LiteralVacio ? dn = '' : dn = this.label[0].toUpperCase() + this.label.substr(1).toLowerCase();//.substring(1, this.label.indexOf('@')-1);
+    return dn;
   };
   linkCount: number = 0;
   type: NodeType;
   state: NodeState;
+  label: string;
 
-  constructor(id, type: NodeType, name?) {
+  constructor(id, type: NodeType, name, label: string) {
     this.id = id;
     this.type = type;
     this.name = name;
     this.state = NodeState.Nuevo;
+    this.label = label;
   }
 
   normal = () => {
@@ -45,7 +51,9 @@ export class Node implements d3.SimulationNodeDatum {
   }
 
   get r() {
-    return 30; //* this.normal() + 10;
+    let r;
+    this.type == NodeType.SinExplorar ? r = 10 : r = 30;
+    return r; //* this.normal() + 10;
   }
 
   get fontSize() {

@@ -2,3 +2,11 @@
     stroke-width: 0.75;
     stroke: rgb(39, 118, 187);
 }
+
+.link-name {
+    font-family: monospace;
+    /* text-anchor: middle; */
+    /* alignment-baseline: central; */
+    font-weight: 100;
+    fill: red;
+  }

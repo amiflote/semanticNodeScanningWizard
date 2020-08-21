@@ -20,6 +20,7 @@ export class DbPediaService {
     relationConceptSelected: string;
     propertyConceptSelected: string;
     literalTyped: string;
+    language: string = 'EN';
 
     constructor(private http: HttpClient,
         private dataGraphService: DataGraphService) { }
@@ -33,8 +34,8 @@ export class DbPediaService {
 
                     response.results.bindings.forEach(
                         (b) => {
-                            let nuNode = this.dataGraphService.addNode(b.datanode.value, NodeType.Instance);
-                            this.dataGraphService.addLink(nuNode, givenNode, 'rdf:type');
+                            let nuNode = this.dataGraphService.addNode(b.datanode.value, NodeType.Instance, b.label.value);
+                            this.dataGraphService.addLink(nuNode, givenNode, 'rdf:type', 'tipo');
                         });
 
                     this.dataGraphService.canRefreshGraph();
@@ -42,15 +43,15 @@ export class DbPediaService {
             );
     }
 
-    public getObjectList(): Observable<string[]> {
+    public getObjectList(): Observable<Map<string,string>> {
         return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getObjectListQuery() + '&format=json&timeout=60000')
             .pipe(map(
                 (data) => {
-                    let objects: string[] = [];
+                    let objects = new Map();
 
                     data.results.bindings.forEach(
                         (o) => {
-                            objects.push(o.concept.value);
+                            objects.set(o.label.value, o.concept.value);
                         }
                     );
 
@@ -59,15 +60,15 @@ export class DbPediaService {
             ));
     }
 
-    public getPropertyList(): Observable<string[]> {
+    public getPropertyList(): Observable<Map<string, string>> {
         return this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getPropertyListQuery() + '&format=json&timeout=60000')
             .pipe(map(
                 (data) => {
-                    let properties: string[] = [];
+                    let properties = new Map();
 
                     data.results.bindings.forEach(
                         (b) => {
-                            properties.push(b.property.value);
+                            properties.set(b.property.value, 'b.label.value');
                         }
                     );
 
@@ -136,7 +137,7 @@ export class DbPediaService {
     }
 
     public addActorNode(): void {
-        this.dataGraphService.addNode(this.actorUri, NodeType.Concepto);
+        this.dataGraphService.addNode(this.actorUri, NodeType.ConceptoPrincipal, 'actor');
         this.dataGraphService.canRefreshGraph();
 
         //return this.dataGraphService.findNode(this.actorUri);
@@ -151,8 +152,8 @@ export class DbPediaService {
 
                     response.results.bindings.forEach(
                         (b) => {
-                            let nuNode = this.dataGraphService.addNode(b.relation.value, NodeType.Expansible);
-                            this.dataGraphService.addLink(givenNode, nuNode, b.relation.value);
+                            let nuNode = this.dataGraphService.addNode(b.relation.value, NodeType.SinExplorar, b.label.value);
+                            this.dataGraphService.addLink(givenNode, nuNode, b.relation.value, b.label.value);
                         });
 
                     this.dataGraphService.canRefreshGraph();
@@ -160,7 +161,7 @@ export class DbPediaService {
             );
     }
 
-    public getNumberOfInstances(): void {
+    public getIntancesCount(): void {
         this.http.get<any>('http://dbpedia.org/sparql?default-graph-uri=http://dbpedia.org&query=' + this.getNumberOfInstancesQuery() + '&format=json&timeout=60000')
             .subscribe(
                 (response) => {
@@ -170,9 +171,9 @@ export class DbPediaService {
                     response.results.bindings.forEach(
                         (b) => {
                             let nodeId = this.dataGraphService.nextNodeId();
-                            let nodeName = nodeId + '/' + b.count.value + ' instances';
-                            let nuNode = this.dataGraphService.addNode(nodeName, NodeType.InstanceCount);
-                            this.dataGraphService.addLink(actorNode, nuNode, 'rdf:type');
+                            let nodeName = nodeId + '/' + b.count.value;
+                            let nuNode = this.dataGraphService.addNode(nodeName, NodeType.InstanceCount, b.count.value + ' instances');
+                            this.dataGraphService.addLink(actorNode, nuNode, 'rdf:type', 'type');
                         });
 
                     this.dataGraphService.canRefreshGraph();
@@ -181,10 +182,11 @@ export class DbPediaService {
     }
 
     private getObjectListQuery(): string {
-        return 'select distinct ?concept where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?object . ?object a ?concept } LIMIT 5'
+        return 'select distinct ?concept ?label where { ?actor a ' + encodeURIComponent('<' + this.actorUri + '>') + ' . ?actor ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?object . ?object a ?concept. ?concept rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language +'") } LIMIT 5'
     }
 
     private getPropertyListQuery(): string {
+        // return 'select distinct ?property ?label where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ?property ?value. FILTER isLiteral(?value). ?property rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language +'") } LIMIT 5'
         return 'select distinct ?property where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ?property ?value. FILTER isLiteral(?value) } LIMIT 5'
     }
 
@@ -193,18 +195,18 @@ export class DbPediaService {
     // }
 
     private getFilteredConceptsQuery(filter: string): string {
-        return 'select distinct ?concept where { ?x rdf:type ?concept. FILTER regex(?concept, "' + filter + '", "i") } LIMIT 100';
+        return 'select distinct ?concept ?label where { ?x rdf:type ?concept. FILTER regex(?concept, "' + filter + '", "i"). ?concept rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language +'") } LIMIT 100';
     }
 
     private getRelationsGivenUriNodeQuery(uriNode: string): string {
-        return 'select distinct ?relation where { ?nodex ?relation ?nodey. ?nodey a ?concept. ?nodex a ' + encodeURIComponent('<' + uriNode + '>') + '} LIMIT 5';
+        return 'select distinct ?relation ?label where { ?nodex ?relation ?nodey. ?nodey a ?concept. ?nodex a ' + encodeURIComponent('<' + uriNode + '>') + '. ?relation rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language +'")} LIMIT 5';
     }
 
     private getNumberOfInstancesQuery(): string {
-        return 'select count (distinct ?datanode) as ?count where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i") }'
+        return 'select count (distinct *) as ?count where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a ' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i"). ?datanode rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language +'") }'
     }
 
     private getInstancesQuery(): string {
-        return 'select distinct ?datanode where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i") }'
+        return 'select distinct ?datanode ?label where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.actorUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i"). ?datanode rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language +'") }'
     }
 }
