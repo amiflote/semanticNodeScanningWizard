@@ -51,11 +51,13 @@ export class NodeVisualComponent implements OnInit {
       this.openChoosePropertyDialog();
     } else if (this.node.type == NodeType.LiteralRelleno) {
       this.dbPediaService.getIntancesCount();
+    } else if (this.node.type == NodeType.ConceptoPrincipal){
+      this.openChoosePropertyMainConceptDialog();
     }
   }
 
   showDataBtn(): boolean {
-    return this.node.type == NodeType.Concepto || this.node.type == NodeType.LiteralRelleno;
+    return this.node.type == NodeType.Concepto || this.node.type == NodeType.LiteralRelleno || this.node.type == NodeType.ConceptoPrincipal;
   }
 
   openChooseConceptDialog(): void {
@@ -96,7 +98,7 @@ export class NodeVisualComponent implements OnInit {
     const dialogConfig = new MatDialogConfig<DialogChooseObject>();
 
     dialogConfig.width = '500px';
-    dialogConfig.height = '100px';
+    dialogConfig.height = '300px';
 
     dialogConfig.data = {
       description: 'test',
@@ -133,7 +135,7 @@ export class NodeVisualComponent implements OnInit {
     const dialogConfig = new MatDialogConfig<DialogChooseObject>();
 
     dialogConfig.width = '500px';
-    dialogConfig.height = '100px';
+    dialogConfig.height = '300px';
 
     dialogConfig.data = {
       description: 'test',
@@ -157,5 +159,38 @@ export class NodeVisualComponent implements OnInit {
 
   showNode(): boolean {
     return this.node.state != NodeState.Oculto;
+  }
+
+  openChoosePropertyMainConceptDialog(): void {
+    const dialogConfig = new MatDialogConfig<DialogChooseObject>();
+
+    dialogConfig.width = '500px';
+    dialogConfig.height = '300px';
+
+    dialogConfig.data = {
+      description: 'test',
+      title: 'test',
+      type: DialogType.PickFromList
+    };
+
+    this.dbPediaService.getPropertyMainConceptList().subscribe(
+      (response) => {
+        if (response) {
+          dialogConfig.data.values = response;
+
+          const dialogRef = this.dialog.open(ChooseObjectDialogComponent, dialogConfig);
+
+          dialogRef.afterClosed().subscribe(
+            (result: [string, string]) => {
+              if (result) {
+                // this.dbPediaService.propertyConceptSelected = result[0];
+
+                // let nuNode = this.dataGraphService.addNode(result[1], NodeType.LiteralVacio, '');
+                // this.dataGraphService.addLink(this.node, nuNode, result[1], result[0]);
+                // this.dataGraphService.canRefreshGraph();
+              }
+            });
+        }
+      });
   }
 }
