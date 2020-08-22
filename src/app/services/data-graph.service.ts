@@ -53,6 +53,6 @@ export class DataGraphService {
     }
 
     hideNode(id: string): void {
-        this.nodes.find(n => n.id == id).state == NodeState.Oculto;
+        this.nodes.find(n => n.id == id).state = NodeState.Oculto;
     }
 }

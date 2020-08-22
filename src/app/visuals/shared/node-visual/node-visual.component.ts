@@ -62,7 +62,7 @@ export class NodeVisualComponent implements OnInit {
     const dialogConfig = new MatDialogConfig<DialogChooseObject>();
 
     dialogConfig.width = '500px';
-    dialogConfig.height = '100px';
+    dialogConfig.height = '300px';
 
     dialogConfig.data = {
       description: 'test',
@@ -153,5 +153,9 @@ export class NodeVisualComponent implements OnInit {
           this.dataGraphService.canRefreshGraph();
         }
       });
+  }
+
+  showNode(): boolean {
+    return this.node.state != NodeState.Oculto;
   }
 }

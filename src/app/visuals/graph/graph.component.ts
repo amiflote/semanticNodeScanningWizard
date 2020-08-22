@@ -54,7 +54,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
   get options() {
     return this._options = {
       width: window.innerWidth,
-      height: window.innerHeight
+      // height: window.innerHeight
+      //width: this._options.width,
+      height: this._options.height
     };
   }
 
@@ -77,36 +79,4 @@ export class GraphComponent implements OnInit, AfterViewInit {
       this.initializeGraph();
     }
   }
-
-  // selectRelation(link: Link) {
-  //   console.log(link);
-
-  //   this.dbPediaService.relationSelected = link.name;
-  //   this.dbPediaService.objectSelected = link.target.name;
-
-  //   const dialogRef = this.dialog.open(ChooseObjectDialogComponent, {
-  //     width: '500px',
-  //     height: '100px',
-  //     data: { name: 'name', animal: 'animal' }
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (this.dbPediaService.objectInstanceSelected) {
-  //       // this.dbPediaService.getActorsGraphQueried().subscribe(
-  //       //   (data) => {
-  //       //     // this.links = data.links;
-  //       //     // this.nodes = data.nodes;
-
-  //       //     this.initializeGraph();
-  //       //   }
-  //       // );
-  //     }
-  //   });
-  // }
-
-  // anyData(): boolean {
-  //   let result;
-  //   this.graph ? result = true : result = false;
-  //   return result 
-  // }
 }

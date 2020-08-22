@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import { Link } from '../../../d3';
+import { Link, NodeState } from '../../../d3';
 import { DataGraphService } from 'src/app/services/data-graph.service';
 
 @Component({
@@ -32,5 +32,9 @@ export class LinkVisualComponent implements OnInit {
 
   getYPositionName(): number {
     return (this.link.target.y + this.link.source.y)/2;
+  }
+
+  showLink(): boolean {
+    return this.link.source.state != NodeState.Oculto && this.link.target.state != NodeState.Oculto;
   }
 }
