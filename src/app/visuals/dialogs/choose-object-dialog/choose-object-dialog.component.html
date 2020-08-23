@@ -1,27 +1,30 @@
-<h1 mat-dialog-title>{{data.title}}</h1>
-<div *ngIf="showPickList()" mat-dialog-content>
-  <mat-label>{{data.description}}</mat-label>
-  <mat-form-field appearance="fill">
-    <!-- <mat-label>Favorite Animal</mat-label>
-    <input matInput [(ngModel)]="data.objectUriSelected"> -->
-    <mat-select>
-        <mat-option *ngFor="let object of data.values.keys()" [value]="object" (click)='onOptionSelected(object)'>
+<div border-dialog>
+  <h6 mat-dialog-title>{{data.title}}</h6>
+  <div *ngIf="showPickList()" mat-dialog-content>
+    <!-- <mat-label mat-dialog-label>{{data.description}}</mat-label> -->
+    <mat-form-field mat-dialog-list>
+       <!-- <mat-label>Favorite Animal</mat-label> -->
+        <!-- <input matInput [(ngModel)]="data.objectUriSelected">  -->
+      <mat-select mat-dialog-list>
+        <mat-option mat-dialog-list *ngFor="let object of data.values.keys()" [value]="object"
+          (click)='onOptionSelected(object)'>
           {{object}}
         </mat-option>
       </mat-select>
-  </mat-form-field>
-</div>
-<div *ngIf="!showPickList()" mat-dialog-content>
-  <mat-label>{{data.description}}</mat-label>
-  <mat-form-field appearance="fill">
-    <!-- <mat-label>Clearable input</mat-label> -->
-    <input matInput type="text" [(ngModel)]="literal">
-    <button mat-button *ngIf="literal" matSuffix mat-icon-button aria-label="Clear" (click)="literal=''">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial (click)="onOkClick()">Ok</button>
+    </mat-form-field>
+  </div>
+  <div *ngIf="!showPickList()" mat-dialog-content>
+    <!-- <mat-label mat-dialog-label>{{data.description}}</mat-label> -->
+    <mat-form-field>
+      <!-- <mat-label>Clearable input</mat-label> -->
+      <input matInput literal-input type="text" [(ngModel)]="literal">
+      <!-- <button mat-button *ngIf="literal" matSuffix mat-icon-button aria-label="Clear" (click)="literal=''">
+        <mat-icon>close</mat-icon>
+      </button> -->
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial (click)="onOkClick()">Ok</button>
+  </div>
 </div>

@@ -1,1 +1,75 @@
 /* You can add global styles to this file, and also import other style files */
+.custom-dialog-container {
+    margin: 10px;
+    background-color: khaki;
+        /* position: absolute !important;
+        top: 10%;
+        left: 50%; */
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+}
+
+/* .custom-dialog-container .mat-dialog-title {
+    background-color: rgb(202, 188, 61);
+    padding: 40;
+} */
+
+/* .custom-dialog-container .mat-dialog-label {
+    background-color: blue;
+    padding: 40;
+    text-emphasis-color: blue;
+    border-block-color: blue;
+} */
+
+/* .custom-dialog-container .mat-dialog-list {
+    background-color: khaki;
+    padding: 40;
+    border-inline-color: red;  
+} */
+
+/* .mat-option { */
+    /* background-color: khaki; */
+    /* padding: 400; */
+    /* max-width: 50%; */
+/* } */
+
+/* .border-dialog {
+    border-block-color: red;
+} */
+
+.mat-select-panel {
+    max-width: 200px !important;
+    min-width: 100px !important;
+    background-color: khaki;
+    border-radius: 10px;
+    margin: 10px;
+    /* position: relative;
+    top: 120px;
+    left: 200px; */
+}
+
+/* .cdk-overlay-container {
+    position: absolute;
+    top: 100px;
+    width: 300px;
+    height: 200px;
+    left: 300px;
+} */
+
+/* .cdk-overlay-pane {
+min-width: 400px !important;
+} */
+
+.mat-dialog-actions {
+    position: relative;
+    margin: 15px;
+    top: 40px;
+}
+
+.mat-dialog-content {
+    margin: 10px !important;
+    overflow: hidden !important;
+    position: relative;
+    top: 20px;
+}

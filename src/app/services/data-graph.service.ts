@@ -55,4 +55,8 @@ export class DataGraphService {
     hideNode(id: string): void {
         this.nodes.find(n => n.id == id).state = NodeState.Oculto;
     }
+
+    getLinkLabelRelatedWithNode(nodeId: string) {
+        return this.links.find(n => n.source.id == nodeId || n.target.id == nodeId).label;
+    }
 }

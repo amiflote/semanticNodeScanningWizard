@@ -7,7 +7,8 @@ export enum NodeType {
   LiteralRelleno,
   InstanceCount,
   Instance,
-  SinExplorar
+  SinExplorar,
+  PropiedadConceptoPrincipal
 }
 
 export enum NodeState {
@@ -30,7 +31,7 @@ export class Node implements d3.SimulationNodeDatum {
   name: string;
   displayName = () => {
     let dn;
-    this.type == NodeType.SinExplorar || this.type == NodeType.LiteralVacio ? dn = '' : dn = this.label[0].toUpperCase() + this.label.substr(1).toLowerCase();//.substring(1, this.label.indexOf('@')-1);
+    this.type == NodeType.SinExplorar || this.type == NodeType.LiteralVacio || this.type == NodeType.PropiedadConceptoPrincipal ? dn = '' : dn = this.label[0].toUpperCase() + this.label.substr(1).toLowerCase();//.substring(1, this.label.indexOf('@')-1);
     return dn;
   };
   linkCount: number = 0;

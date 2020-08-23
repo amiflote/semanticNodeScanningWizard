@@ -13,17 +13,19 @@ import { ChooseObjectDialogComponent, DialogChooseObject, DialogType } from '../
 export class NodeVisualComponent implements OnInit {
   @Input('nodeVisual') node: Node;
   literal: string = '';
+  linkLabelRelated: string;
 
   constructor(private dbPediaService: DbPediaService,
     private dataGraphService: DataGraphService,
     public dialog: MatDialog
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.node.type != NodeType.ConceptoPrincipal)
+      this.linkLabelRelated = this.dataGraphService.getLinkLabelRelatedWithNode(this.node.id);
+  }
 
   onArrowClick() {
-    console.log("arrow clicked");
-
     this.dbPediaService.getRelations(this.node.name);
     this.node.state = NodeState.Expandido;
   }
@@ -51,24 +53,25 @@ export class NodeVisualComponent implements OnInit {
       this.openChoosePropertyDialog();
     } else if (this.node.type == NodeType.LiteralRelleno) {
       this.dbPediaService.getIntancesCount();
-    } else if (this.node.type == NodeType.ConceptoPrincipal){
+    } else if (this.node.type == NodeType.ConceptoPrincipal) {
       this.openChoosePropertyMainConceptDialog();
+    } else if (this.node.type == NodeType.PropiedadConceptoPrincipal) {
+      this.dataGraphService.hideNode(this.node.id);
+      this.dbPediaService.getInstancePropertyValue();
     }
   }
 
   showDataBtn(): boolean {
-    return this.node.type == NodeType.Concepto || this.node.type == NodeType.LiteralRelleno || this.node.type == NodeType.ConceptoPrincipal;
+    return this.node.type == NodeType.Concepto || this.node.type == NodeType.LiteralRelleno || this.node.type == NodeType.ConceptoPrincipal || this.node.type == NodeType.PropiedadConceptoPrincipal;
   }
 
   openChooseConceptDialog(): void {
     const dialogConfig = new MatDialogConfig<DialogChooseObject>();
 
-    dialogConfig.width = '500px';
-    dialogConfig.height = '300px';
+    dialogConfig.panelClass = 'custom-dialog-container';
 
     dialogConfig.data = {
-      description: 'test',
-      title: 'test',
+      title: 'Choose a concept of ' + this.linkLabelRelated,
       type: DialogType.PickFromList
     };
 
@@ -97,12 +100,10 @@ export class NodeVisualComponent implements OnInit {
   openChoosePropertyDialog(): void {
     const dialogConfig = new MatDialogConfig<DialogChooseObject>();
 
-    dialogConfig.width = '500px';
-    dialogConfig.height = '300px';
+    dialogConfig.panelClass = 'custom-dialog-container';
 
     dialogConfig.data = {
-      description: 'test',
-      title: 'test',
+      title: 'Choose a property of ' + this.linkLabelRelated,
       type: DialogType.PickFromList
     };
 
@@ -116,7 +117,7 @@ export class NodeVisualComponent implements OnInit {
           dialogRef.afterClosed().subscribe(
             (result: [string, string]) => {
               if (result) {
-                this.dbPediaService.propertyConceptSelected = result[0];
+                this.dbPediaService.propertyConceptSelected = result[1];
 
                 let nuNode = this.dataGraphService.addNode(result[1], NodeType.LiteralVacio, '');
                 this.dataGraphService.addLink(this.node, nuNode, result[1], result[0]);
@@ -134,12 +135,10 @@ export class NodeVisualComponent implements OnInit {
   openTypeFilterDialog(): void {
     const dialogConfig = new MatDialogConfig<DialogChooseObject>();
 
-    dialogConfig.width = '500px';
-    dialogConfig.height = '300px';
+    dialogConfig.panelClass = 'custom-dialog-container';
 
     dialogConfig.data = {
-      description: 'test',
-      title: 'test',
+      title: 'Type a filter of ' + this.linkLabelRelated,
       type: DialogType.TypeValue
     };
 
@@ -164,12 +163,10 @@ export class NodeVisualComponent implements OnInit {
   openChoosePropertyMainConceptDialog(): void {
     const dialogConfig = new MatDialogConfig<DialogChooseObject>();
 
-    dialogConfig.width = '500px';
-    dialogConfig.height = '300px';
+    dialogConfig.panelClass = 'custom-dialog-container';
 
     dialogConfig.data = {
-      description: 'test',
-      title: 'test',
+      title: 'Choose a property of ' + this.node.label,
       type: DialogType.PickFromList
     };
 
@@ -183,11 +180,12 @@ export class NodeVisualComponent implements OnInit {
           dialogRef.afterClosed().subscribe(
             (result: [string, string]) => {
               if (result) {
-                // this.dbPediaService.propertyConceptSelected = result[0];
+                this.dbPediaService.propertyLabelMainConceptSelected = result[0];
+                this.dbPediaService.propertyMainConceptSelected = result[1];
 
-                // let nuNode = this.dataGraphService.addNode(result[1], NodeType.LiteralVacio, '');
-                // this.dataGraphService.addLink(this.node, nuNode, result[1], result[0]);
-                // this.dataGraphService.canRefreshGraph();
+                let nuNode = this.dataGraphService.addNode(result[1], NodeType.PropiedadConceptoPrincipal, '');
+                this.dataGraphService.addLink(this.node, nuNode, result[1], result[0]);
+                this.dataGraphService.canRefreshGraph();
               }
             });
         }

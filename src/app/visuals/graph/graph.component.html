@@ -1,6 +1,6 @@
 <div class="svg-graph" style="width:50%">
     <svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
-        <rect width="100%" height="100%" fill="black"/>
+        <rect width="100%" height="100%" fill="rgba(163, 204, 187, 0.293)"/>
         <g [zoomableOf]="svg">
             <g [linkVisual]="link" *ngFor="let link of links"></g>
             <g [nodeVisual]="node" *ngFor="let node of nodes" [draggableNode]="node" [draggableInGraph]="graph"></g>

@@ -9,7 +9,6 @@ export enum DialogType {
 
 export interface DialogChooseObject {
   title: string;
-  description: string;
   type: DialogType;
   values?: Map<string, string>;
 }
@@ -22,7 +21,7 @@ export interface DialogChooseObject {
 export class ChooseObjectDialogComponent implements OnInit {
 
   optionSelected: string;
-  literal: string;
+  literal: string = 'Filter';
 
   constructor(
     public dialogRef: MatDialogRef<AppComponent>,
@@ -30,6 +29,7 @@ export class ChooseObjectDialogComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+    // this.removeDivs();
   }
 
   onOkClick(): void {
@@ -41,6 +41,7 @@ export class ChooseObjectDialogComponent implements OnInit {
       result = this.literal;
 
     this.dialogRef.close(result);
+    // this.removeDivs();
   }
 
   ngOnInit(): void { }
@@ -52,5 +53,14 @@ export class ChooseObjectDialogComponent implements OnInit {
 
   showPickList(): boolean {
     return this.data.type == DialogType.PickFromList;
+  }
+
+  private removeDivs(): void {
+    document.querySelectorAll('.cdk-overlay-container').forEach(function (a) {
+      a.remove()
+    });
+    document.querySelectorAll('.cdk-visually-hidden').forEach(function (a) {
+      a.remove()
+    });
   }
 }
