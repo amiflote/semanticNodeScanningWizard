@@ -2,18 +2,18 @@ import APP_CONFIG from '../../app.config';
 
 export enum NodeType {
   ConceptoPrincipal,
+  SinExplorar,
   Concepto,
   LiteralVacio,
   LiteralRelleno,
   InstanceCount,
   Instance,
-  SinExplorar,
   PropiedadConceptoPrincipal
 }
 
 export enum NodeState {
   Nuevo,
-  Expandido,
+  RelacionesExpandidas,
   Oculto
 }
 
@@ -53,8 +53,8 @@ export class Node implements d3.SimulationNodeDatum {
 
   get r() {
     let r;
-    this.type == NodeType.SinExplorar ? r = 10 : r = 30;
-    return r; //* this.normal() + 10;
+    this.type == NodeType.SinExplorar || this.type == NodeType.LiteralVacio ? r = 10 : r = 30;
+    return r;
   }
 
   get fontSize() {
@@ -63,6 +63,6 @@ export class Node implements d3.SimulationNodeDatum {
 
   get color() {
     //let index = Math.floor(APP_CONFIG.SPECTRUM.length * this.normal());
-    return APP_CONFIG.SPECTRUM[this.type];
+    return APP_CONFIG.SPECTRUM[this.type%APP_CONFIG.SPECTRUM.length];
   }
 }

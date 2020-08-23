@@ -10,7 +10,7 @@
     <svg:g *ngIf="showDataBtn()" [attr.transform]="'translate(' + -25 + ',' + 20 + ')'" (click)="selectDataNode()" style="cursor: pointer;">
         <rect rx="5" ry="10" width="50" height="15" style="fill:goldenrod;stroke:black;stroke-width:1"/>
         <svg:text class="node-name" [attr.font-size]="node.fontSize" x="25" y="7.5">
-           {{node.type != 2 ? 'Data' : 'Search'}} 
+           {{getDataButtonText()}} 
         </svg:text>
     </svg:g>
 </svg:g>

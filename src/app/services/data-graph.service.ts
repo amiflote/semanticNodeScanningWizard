@@ -40,6 +40,12 @@ export class DataGraphService {
         return nuLink;
     }
 
+    copyLinkWithMainConcept(target: Node, refNode: Node): Link {
+        let mainNode = this.nodes.find(n => n.type == NodeType.ConceptoPrincipal);
+        let link = this.links.find(l => l.target.id == refNode.id);
+        return this.addLink(mainNode, target, link.name, link.label);
+    }
+
     canRefreshGraph() {
         this.refreshGraph$.next(true);
     }
@@ -58,5 +64,10 @@ export class DataGraphService {
 
     getLinkLabelRelatedWithNode(nodeId: string) {
         return this.links.find(n => n.source.id == nodeId || n.target.id == nodeId).label;
+    }
+
+    getRelationNameWithMainConcept(node: Node) {
+        let link = this.links.find(l => l.target.id == node.id && l.source.type == NodeType.ConceptoPrincipal);
+        return link.name;
     }
 }

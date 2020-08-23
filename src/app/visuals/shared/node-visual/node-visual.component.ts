@@ -27,11 +27,11 @@ export class NodeVisualComponent implements OnInit {
 
   onArrowClick() {
     this.dbPediaService.getRelations(this.node.name);
-    this.node.state = NodeState.Expandido;
+    this.node.state = NodeState.RelacionesExpandidas;
   }
 
   showArrow(): boolean {
-    return this.node.type == NodeType.ConceptoPrincipal;
+    return this.node.type == NodeType.ConceptoPrincipal && this.node.state != NodeState.RelacionesExpandidas;
   }
 
   selectNode(): void {
@@ -50,6 +50,7 @@ export class NodeVisualComponent implements OnInit {
   selectDataNode(): void {
 
     if (this.node.type == NodeType.Concepto) {
+      this.updateQueryParameters();
       this.openChoosePropertyDialog();
     } else if (this.node.type == NodeType.LiteralRelleno) {
       this.dbPediaService.getIntancesCount();
@@ -85,10 +86,12 @@ export class NodeVisualComponent implements OnInit {
           dialogRef.afterClosed().subscribe(
             (result: [string, string]) => {
               if (result) {
-                let nodeToModify = this.dataGraphService.findNode(this.node.name);
-                nodeToModify.label = result[0];
-                nodeToModify.name = result[1];
-                nodeToModify.type = NodeType.Concepto;
+                // let nodeToModify = this.dataGraphService.findNode(this.node.name);
+                // nodeToModify.label = result[0];
+                // nodeToModify.name = result[1];
+                // nodeToModify.type = NodeType.Concepto;
+                let nuNode = this.dataGraphService.addNode(result[1], NodeType.Concepto, result[0]);
+                this.dataGraphService.copyLinkWithMainConcept(nuNode, this.node)
                 this.dbPediaService.relationConceptSelected = result[1];
                 this.dataGraphService.canRefreshGraph();
               }
@@ -103,7 +106,7 @@ export class NodeVisualComponent implements OnInit {
     dialogConfig.panelClass = 'custom-dialog-container';
 
     dialogConfig.data = {
-      title: 'Choose a property of ' + this.linkLabelRelated,
+      title: 'Choose a property of ' + this.node.label,
       type: DialogType.PickFromList
     };
 
@@ -190,5 +193,32 @@ export class NodeVisualComponent implements OnInit {
             });
         }
       });
+  }
+
+  public getDataButtonText(): string {
+    let text: string;
+
+    switch (this.node.type) {
+      case NodeType.Concepto:
+        text = "Property";
+        break;
+      case NodeType.LiteralRelleno:
+        text = "Search";
+        break;
+      case NodeType.ConceptoPrincipal:
+        text = "Property";
+        break;
+      case NodeType.PropiedadConceptoPrincipal:
+      default:
+        text = "Data";
+        break;
+    }
+
+    return text;
+  }
+
+  private updateQueryParameters() {
+    this.dbPediaService.relationSelected = this.dataGraphService.getRelationNameWithMainConcept(this.node);
+    this.dbPediaService.relationConceptSelected = this.node.name;
   }
 }
