@@ -4,9 +4,9 @@ import { Node } from './node';
 import * as d3 from 'd3';
 
 const FORCES = {
-  LINKS: 1 / 50,
-  COLLISION: 1,
-  CHARGE: -1
+  LINKS: (n: number) => { return 1 / (n*10) },
+  COLLISION: 10,
+  CHARGE: -2
 }
 
 export class ForceDirectedGraph {
@@ -54,7 +54,7 @@ export class ForceDirectedGraph {
     this.simulation.force('links',
       d3.forceLink(this.links)
         .id(d => d['id'])
-        .strength(FORCES.LINKS)
+        .strength(FORCES.LINKS(this.nodes.length))
     );
   }
 
@@ -92,17 +92,5 @@ export class ForceDirectedGraph {
 
     /** Restarting the simulation internal timer */
     this.simulation.restart();
-  }
-
-  updateLinks(links: Link[]) {
-    this.simulation.force('links',
-      d3.forceLink(links)
-        .id(d => d['id'])
-        .strength(FORCES.LINKS)
-    );
-  }
-
-  updateNodes(nodes: Node[]) {
-
   }
 }
