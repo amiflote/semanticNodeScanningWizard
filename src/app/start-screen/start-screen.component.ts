@@ -8,10 +8,15 @@ import { DbPediaService } from '../data-api/dbpedia.service';
 })
 export class StartScreenComponent implements OnInit {
   
-  value: string = 'Search concept';
+  value: string;
   concepts: string[] = [];
 
+  events: string[] = [];
+  opened: boolean = true;;
+
   constructor(private dbPediaService: DbPediaService) { }
+
+
 
   ngOnInit(): void {
   }

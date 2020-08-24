@@ -1,3 +1,28 @@
 .example-form-field {
-    width: 200px;
-  }
+  /* width: 200px; */
+}
+
+.sidenav-container {
+  position: static;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* width: 25%; */
+  /* max-width: 20%; */
+  /* min-width: 10%; */
+  /* height: 100%; */
+}
+
+.sidenav {
+  width: 20%; 
+  background-color: rgb(163, 198, 217);
+}
+
+.sidenav-content {
+  margin: 10%;
+}
+
+.sidenav-button {
+  background-color: rgb(163, 198, 217);
+}

@@ -86,10 +86,6 @@ export class NodeVisualComponent implements OnInit {
           dialogRef.afterClosed().subscribe(
             (result: [string, string]) => {
               if (result) {
-                // let nodeToModify = this.dataGraphService.findNode(this.node.name);
-                // nodeToModify.label = result[0];
-                // nodeToModify.name = result[1];
-                // nodeToModify.type = NodeType.Concepto;
                 let nuNode = this.dataGraphService.addNode(result[1], NodeType.Concepto, result[0]);
                 this.dataGraphService.copyLinkWithMainConcept(nuNode, this.node)
                 this.dbPediaService.relationConceptSelected = result[1];
