@@ -23,6 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { DataGraphService } from './services/data-graph.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatSelectModule,
     MatIconModule,
     MatListModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatProgressSpinnerModule
   ],
   providers: [D3Service, DbPediaService, DataGraphService],
   bootstrap: [AppComponent]

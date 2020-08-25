@@ -80,3 +80,10 @@ min-width: 400px !important;
 .mat-dialog-container {
     background-color: khaki;
 }
+
+.main-loading {
+    position: fixed; 
+    top: 50%;
+    left: 50%;
+    text-align: center;
+}
