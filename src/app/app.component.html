@@ -1,10 +1,10 @@
 <div class="menu">
-    <app-start-screen></app-start-screen>
+    <app-start-screen (ready)="onReady()"></app-start-screen>
 </div>
-<div class="graph" *ngIf="false">
+<div class="graph" *ngIf="initGraph">
     <graph [nodes]="nodes" [links]="links"></graph>
 </div>
-<div class="main-loading">
+<div class="main-loading" *ngIf="!initGraph">
     <!-- <mat-spinner></mat-spinner> -->
     <h2>Select a graph</h2>
 </div>

@@ -6,7 +6,7 @@
             <mat-form-field appearance="fill">
                 <mat-label>Select endpoint</mat-label>
                 <mat-select mat-dialog-list>
-                    <mat-option mat-dialog-list *ngFor="let endpoint of endpoints" [value]="endpoint">
+                    <mat-option mat-dialog-list *ngFor="let endpoint of endpoints" [value]="endpoint" (click)="onEndpointSelected(endpoint)">
                         {{endpoint}}
                     </mat-option>
                 </mat-select>
@@ -32,7 +32,7 @@
             <mat-form-field appearance="fill">
                 <mat-label>Select language</mat-label>
                 <mat-select mat-dialog-list>
-                    <mat-option mat-dialog-list *ngFor="let language of languages" [value]="language">
+                    <mat-option mat-dialog-list *ngFor="let language of languages" [value]="language" (click)="onLanguageSelected(language)">
                         {{language}}
                     </mat-option>
                 </mat-select>
@@ -52,7 +52,7 @@
             <div *ngIf="concepts">
                 <h6>Results</h6>
                 <mat-selection-list [multiple]="false">
-                    <mat-list-option *ngFor="let concept of concepts" [value]="concept"
+                    <mat-list-option *ngFor="let concept of conceptKeys" [value]="concept"
                         (click)="selectConcept(concept)">
                         {{concept}}
                     </mat-list-option>
@@ -62,7 +62,7 @@
                 <mat-spinner></mat-spinner>
             </div>
             <div lets-start-button *ngIf="conceptSelected">
-                <button mat-flat-button color="accent" (click)="startGraph()">Initialize graph</button>
+                <button mat-flat-button color="accent" [disabled]="initGraphButtonDisabled" (click)="startGraph()">Initialize graph</button>
             </div>
         </div>
     </mat-sidenav>

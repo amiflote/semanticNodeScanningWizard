@@ -21,7 +21,8 @@ export interface DialogChooseObject {
 export class ChooseObjectDialogComponent implements OnInit {
 
   optionSelected: string;
-  literal: string = 'Filter';
+  literal: string;
+  objectsKeys: string[];
 
   constructor(
     public dialogRef: MatDialogRef<AppComponent>,
@@ -41,10 +42,12 @@ export class ChooseObjectDialogComponent implements OnInit {
       result = this.literal;
 
     this.dialogRef.close(result);
-    // this.removeDivs();
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    if (this.data.type == DialogType.PickFromList && this.data.values)
+      this.objectsKeys = Array.from(this.data.values.keys());
+  }
 
   onOptionSelected(object) {
     if (object)
@@ -53,14 +56,5 @@ export class ChooseObjectDialogComponent implements OnInit {
 
   showPickList(): boolean {
     return this.data.type == DialogType.PickFromList;
-  }
-
-  private removeDivs(): void {
-    document.querySelectorAll('.cdk-overlay-container').forEach(function (a) {
-      a.remove()
-    });
-    document.querySelectorAll('.cdk-visually-hidden').forEach(function (a) {
-      a.remove()
-    });
   }
 }

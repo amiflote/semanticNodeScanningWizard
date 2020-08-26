@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { DbPediaService } from '../data-api/dbpedia.service';
 
 @Component({
@@ -8,18 +8,23 @@ import { DbPediaService } from '../data-api/dbpedia.service';
 })
 export class StartScreenComponent implements OnInit {
 
+  @Output() ready = new EventEmitter<boolean>();
+
   value: string;
-  concepts: string[];
+  concepts: Map<string, string> = null;
 
   events: string[] = [];
   opened: boolean = true;
-  endpoints: string[] = ['https://dbpedia.org/sparql/'];
+  endpoints: string[] = ['https://dbpedia.org/sparql'];
   endpointSelected: string;
   languages: string[] = ['EN', 'ES'];
+  languageSelected: string;
   loading: boolean = false;
   showAddEndpointInput: boolean = false;
   newEndpoint: string;
   conceptSelected: string;
+  initGraphButtonDisabled: boolean = false;
+  conceptKeys: string[] = [];
 
   constructor(private dbPediaService: DbPediaService) { }
 
@@ -27,12 +32,16 @@ export class StartScreenComponent implements OnInit {
   }
 
   filterConcepts() {
+    this.dbPediaService.endpoint = this.endpointSelected;
+    this.dbPediaService.language = this.languageSelected;
+
     this.concepts = null;
     this.loading = true;
     this.dbPediaService.getFilteredConcepts(this.value).subscribe(
-      (data) => {
+      (data: Map<string, string>) => {
         this.loading = false;
         this.concepts = data;
+        this.conceptKeys = Array.from(data.keys());
       }
     );
   }
@@ -56,6 +65,21 @@ export class StartScreenComponent implements OnInit {
   }
 
   startGraph(): void {
+    this.dbPediaService.addMainNode([this.conceptSelected, this.concepts.get(this.conceptSelected)]);
+    this.initGraphButtonDisabled = true;
+    this.opened = false;
+    this.ready.emit(true);
+  }
 
+  onEndpointSelected(endpoint: string) {
+    if (endpoint) {
+      this.endpointSelected = endpoint;
+    }
+  }
+
+  onLanguageSelected(language: string) {
+    if (language) {
+      this.languageSelected = language;
+    }
   }
 }

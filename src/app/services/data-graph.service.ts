@@ -8,8 +8,6 @@ export class DataGraphService {
     nodes: Node[] = [];
     links: Link[] = [];
 
-    // positions: Node[] = [];
-
     private idCounter: number = 1;
     private refreshGraph$ = new Subject<boolean>(); 
 
