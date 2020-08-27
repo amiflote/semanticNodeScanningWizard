@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Node, NodeType, NodeState } from '../../../d3';
-import { DbPediaService } from 'src/app/data-api/dbpedia.service';
+import { DbPediaService } from 'src/app/services/dbpedia.service';
 import { DataGraphService } from 'src/app/services/data-graph.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ChooseObjectDialogComponent, DialogChooseObject, DialogType } from '../../dialogs/choose-object-dialog/choose-object-dialog.component';

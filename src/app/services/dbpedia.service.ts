@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { NodeType } from 'src/app/d3';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DataGraphService } from '../services/data-graph.service';
+import { DataGraphService } from './data-graph.service';
 
 @Injectable()
 export class DbPediaService {

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Node, Link } from './d3';
-import { DbPediaService } from './data-api/dbpedia.service';
 import { DataGraphService } from './services/data-graph.service';
 
 @Component({
@@ -15,8 +14,7 @@ export class AppComponent implements OnInit {
 
   initGraph: boolean = false;
 
-  constructor(private dbpediaService: DbPediaService,
-    public dataGraphService: DataGraphService) { }
+  constructor(public dataGraphService: DataGraphService) { }
 
   ngOnInit(): void {
     this.nodes = this.dataGraphService.nodes;
@@ -24,7 +22,6 @@ export class AppComponent implements OnInit {
   }
 
   onReady() {
-    // this.dbpediaService.addActorNode();
     this.initGraph = true;
   }
 }

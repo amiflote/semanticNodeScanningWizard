@@ -30,7 +30,6 @@ export class ChooseObjectDialogComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
-    // this.removeDivs();
   }
 
   onOkClick(): void {

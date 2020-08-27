@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { DbPediaService } from '../data-api/dbpedia.service';
+import { DbPediaService } from '../services/dbpedia.service';
 
 @Component({
   selector: 'app-start-screen',

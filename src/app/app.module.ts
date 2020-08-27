@@ -14,7 +14,7 @@ import { SHARED_VISUALS } from './visuals/shared';
 import { D3_DIRECTIVES } from './d3/directives';
 import { FormsModule } from '@angular/forms';
 import { D3Service } from './d3/d3.service';
-import { DbPediaService } from './data-api/dbpedia.service';
+import { DbPediaService } from './services/dbpedia.service';
 import { ChooseObjectDialogComponent } from './visuals/dialogs/choose-object-dialog/choose-object-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
@@ -24,6 +24,7 @@ import { MatListModule } from '@angular/material/list';
 import { DataGraphService } from './services/data-graph.service';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ...SHARED_VISUALS,
     ...D3_DIRECTIVES,
     ChooseObjectDialogComponent,
-    StartScreenComponent
+    StartScreenComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,
