@@ -1,16 +1,17 @@
 <svg:g *ngIf="showNode()" [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
-    <svg:circle class="node" [attr.fill]="node.color" cx="0" cy="0" [attr.r]="node.r" (click)="selectNode()">
+    <svg:circle *ngIf="showCircle()" class="node" [attr.fill]="node.color" cx="0" cy="0" [attr.r]="node.r" (click)="selectNode()">
     </svg:circle>
-    <!-- <svg:rect *ngIf="!showCircle()" [attr.x]="node.x" [attr.y]="node.y" fill="green"/> -->
+    <rect *ngIf="!showCircle()" class="node" x="-35" y="-20" width="70" height="40" fill="rgb(162,177,219)" (click)="selectNode()" />
     <svg:text class="node-name" [attr.font-size]="node.fontSize">
         {{node.displayName()}}
     </svg:text>
     <svg:path *ngIf="showArrow()" class="arrow" d="M 50,0 L 60,10 L 20,50 L 60,90 L 50,100 L 0,50 Z "
         transform="translate(31,-20) rotate(180) scale(0.1,0.1)" (click)="onArrowClick()"></svg:path>
-    <svg:g *ngIf="showDataBtn()" [attr.transform]="'translate(' + -25 + ',' + 20 + ')'" (click)="selectDataNode()" style="cursor: pointer;">
-        <rect rx="5" ry="10" width="50" height="15" style="fill:goldenrod;stroke:black;stroke-width:1"/>
+    <svg:g *ngIf="showDataBtn()" [attr.transform]="'translate(' + -25 + ',' + 20 + ')'" (click)="selectDataNode()"
+        style="cursor: pointer;">
+        <rect rx="5" ry="10" width="50" height="15" style="fill:goldenrod;stroke:black;stroke-width:1" />
         <svg:text class="node-name" [attr.font-size]="node.fontSize" x="25" y="7.5">
-           {{getDataButtonText()}} 
+            {{getDataButtonText()}}
         </svg:text>
     </svg:g>
 </svg:g>
