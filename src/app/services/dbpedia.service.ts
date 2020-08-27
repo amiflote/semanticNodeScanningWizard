@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { NodeType } from 'src/app/d3';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DataGraphService } from './data-graph.service';
 
 @Injectable()
@@ -10,6 +10,8 @@ export class DbPediaService {
 
     // Private fields
     private queryLimit = 25;
+    private loading$ = new Subject<boolean>();
+
 
     // Public fields
 
@@ -24,10 +26,18 @@ export class DbPediaService {
     propertyLabelMainConceptSelected: string;
     literalTyped: string;
 
+
+
     constructor(private http: HttpClient,
         private dataGraphService: DataGraphService) { }
 
+
+    public getLoading$(): Observable<boolean> {
+        return this.loading$.asObservable();
+    }
+
     public getInstances(): void {
+        this.setLoading(true);
         this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getInstancesQuery() + '&format=json&timeout=60000')
             .subscribe(
                 (response) => {
@@ -41,11 +51,13 @@ export class DbPediaService {
                         });
 
                     this.dataGraphService.canRefreshGraph();
+                    this.setLoading(false);
                 }
             );
     }
 
     public getObjectList(): Observable<Map<string, string>> {
+        this.setLoading(true);
         return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getObjectListQuery() + '&format=json&timeout=60000')
             .pipe(map(
                 (data) => {
@@ -57,12 +69,15 @@ export class DbPediaService {
                         }
                     );
 
+                    this.setLoading(false);
+
                     return objects;
                 }
             ));
     }
 
     public getPropertyList(): Observable<Map<string, string>> {
+        this.setLoading(true);
         return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getPropertyListQuery() + '&format=json&timeout=60000')
             .pipe(map(
                 (data) => {
@@ -74,12 +89,15 @@ export class DbPediaService {
                         }
                     );
 
+                    this.setLoading(false);
+                    
                     return properties;
                 }
             ));
     }
 
     public getFilteredConcepts(filter: string): Observable<Map<string, string>> {
+        this.setLoading(true);
         return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getFilteredConceptsQuery(filter) + '&format=json&timeout=60000')
             .pipe(map(
                 (data) => {
@@ -90,6 +108,8 @@ export class DbPediaService {
                             concepts.set(b.label.value, b.concept.value);
                         }
                     );
+                    
+                    this.setLoading(false);
 
                     return concepts;
                 }
@@ -102,6 +122,7 @@ export class DbPediaService {
     }
 
     public getRelations(uriNode: string): void {
+        this.setLoading(true);
         this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getRelationsGivenUriNodeQuery(uriNode) + '&format=json&timeout=60000')
             .subscribe(
                 (response) => {
@@ -115,11 +136,13 @@ export class DbPediaService {
                         });
 
                     this.dataGraphService.canRefreshGraph();
+                    this.setLoading(false);
                 }
             );
     }
 
     public getIntancesCount(): void {
+        this.setLoading(true);
         this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getNumberOfInstancesQuery() + '&format=json&timeout=60000')
             .subscribe(
                 (response) => {
@@ -135,11 +158,13 @@ export class DbPediaService {
                         });
 
                     this.dataGraphService.canRefreshGraph();
+                    this.setLoading(false);
                 }
             );
     }
 
     public getPropertyMainConceptList(): Observable<Map<string, string>> {
+        this.setLoading(true);
         return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getPropertyMainConceptListQuery() + '&format=json&timeout=60000')
             .pipe(map(
                 (data) => {
@@ -150,6 +175,8 @@ export class DbPediaService {
                             properties.set(b.label.value, b.property.value);
                         }
                     );
+                    
+                    this.setLoading(false);
 
                     return properties;
                 }
@@ -157,6 +184,7 @@ export class DbPediaService {
     }
 
     public getInstancePropertyValue(): void {
+        this.setLoading(true);
         this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getInstancePropertyValueQuery() + '&format=json&timeout=60000')
             .subscribe(
                 (response) => {
@@ -170,8 +198,13 @@ export class DbPediaService {
                         });
 
                     this.dataGraphService.canRefreshGraph();
+                    this.setLoading(false);
                 }
             );
+    }
+
+    private setLoading(isLoading: boolean) {
+        this.loading$.next(isLoading);
     }
 
     private getObjectListQuery(): string {

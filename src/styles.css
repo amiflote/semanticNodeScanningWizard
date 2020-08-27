@@ -81,7 +81,7 @@ min-width: 400px !important;
     background-color: khaki;
 }
 
-.main-loading {
+.main-empty {
     position: fixed; 
     top: 50%;
     left: 50%;

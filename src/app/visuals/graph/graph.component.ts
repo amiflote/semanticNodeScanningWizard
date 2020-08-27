@@ -1,7 +1,7 @@
-import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, Injectable } from '@angular/core';
+import { Component, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, Injectable } from '@angular/core';
 import { D3Service, ForceDirectedGraph, Link, Node } from '../../d3';
-import { MatDialog } from '@angular/material/dialog';
 import { DataGraphService } from 'src/app/services/data-graph.service';
+import { DbPediaService } from 'src/app/services/dbpedia.service';
 
 @Component({
   selector: 'graph',
@@ -15,10 +15,12 @@ import { DataGraphService } from 'src/app/services/data-graph.service';
   }
 )
 export class GraphComponent implements OnInit {
-  @Input('nodes') nodes: Node[];
-  @Input('links') links: Link[];
+  nodes: Node[];
+  links: Link[];
   graph: ForceDirectedGraph;
   _options: { width, height } = { width: window.innerWidth, height: window.innerHeight };
+
+  loading: boolean = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -27,16 +29,25 @@ export class GraphComponent implements OnInit {
 
   constructor(private d3Service: D3Service,
     private ref: ChangeDetectorRef,
-    public dialog: MatDialog,
-    private dataGraphService: DataGraphService) { }
+    private dataGraphService: DataGraphService,
+    private dbPediaService: DbPediaService) { }
 
   ngOnInit() { 
+    this.nodes = this.dataGraphService.nodes;
+    this.links = this.dataGraphService.links;
+
     this.initializeGraph();
 
     this.dataGraphService.getRefreshGraph$().subscribe(
       () => {
         this.graph.initNodes();
         this.graph.initLinks();
+      }
+    );
+
+    this.dbPediaService.getLoading$().subscribe(
+      (isLoading: boolean) => {
+        this.loading = isLoading;
       }
     )
   }

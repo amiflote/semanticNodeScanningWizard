@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Node, Link } from './d3';
 import { DataGraphService } from './services/data-graph.service';
 
 @Component({
@@ -9,17 +8,11 @@ import { DataGraphService } from './services/data-graph.service';
 })
 
 export class AppComponent implements OnInit {
-  nodes: Node[] = [];
-  links: Link[] = [];
-
   initGraph: boolean = false;
 
   constructor(public dataGraphService: DataGraphService) { }
 
-  ngOnInit(): void {
-    this.nodes = this.dataGraphService.nodes;
-    this.links = this.dataGraphService.links;
-  }
+  ngOnInit(): void { }
 
   onReady() {
     this.initGraph = true;

@@ -2,11 +2,9 @@
     <app-start-screen (ready)="onReady()"></app-start-screen>
 </div>
 <div class="graph" *ngIf="initGraph">
-    <graph [nodes]="nodes" [links]="links"></graph>
+    <graph></graph>
 </div>
-<div class="main-loading" *ngIf="!initGraph">
+<div class="main-empty" *ngIf="!initGraph">
     <!-- <mat-spinner></mat-spinner> -->
     <h2>Select a graph</h2>
-    <!-- <app-spinner overlay="false">
-    </app-spinner> -->
 </div>
