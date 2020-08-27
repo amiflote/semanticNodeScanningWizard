@@ -39,7 +39,7 @@ export class DbPediaService {
 
     public getInstances(): void {
         this.setLoading(true);
-        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getInstancesQuery() + '&format=json&timeoutLimit=' + this.timeoutms )
+        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getInstancesQuery() + '&format=json&timeout=' + this.timeoutms )
             .subscribe(
                 (response) => {
 
@@ -62,7 +62,7 @@ export class DbPediaService {
 
     public getObjectList(): Observable<Map<string, string>> {
         this.setLoading(true);
-        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getObjectListQuery() + '&format=json&timeoutLimit=' + this.timeoutms )
+        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getObjectListQuery() + '&format=json&timeout=' + this.timeoutms )
             .pipe(map(
                 (data) => {
                     let objects = new Map();
@@ -85,7 +85,7 @@ export class DbPediaService {
 
     public getPropertyList(): Observable<Map<string, string>> {
         this.setLoading(true);
-        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getPropertyListQuery() + '&format=json&timeoutLimit=' + this.timeoutms )
+        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getPropertyListQuery() + '&format=json&timeout=' + this.timeoutms )
             .pipe(map(
                 (data) => {
                     let properties = new Map();
@@ -108,7 +108,7 @@ export class DbPediaService {
 
     public getFilteredConcepts(filter: string): Observable<Map<string, string>> {
         this.setLoading(true);
-        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getFilteredConceptsQuery(filter) + '&format=json&timeoutLimit=' + this.timeoutms )
+        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getFilteredConceptsQuery(filter) + '&format=json&timeout=' + this.timeoutms )
             .pipe(map(
                 (data) => {
                     let concepts = new Map();
@@ -136,7 +136,7 @@ export class DbPediaService {
 
     public getRelations(uriNode: string): void {
         this.setLoading(true);
-        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getRelationsGivenUriNodeQuery(uriNode) + '&format=json&timeoutLimit=' + this.timeoutms )
+        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getRelationsGivenUriNodeQuery(uriNode) + '&format=json&timeout=' + this.timeoutms )
             .subscribe(
                 (response) => {
 
@@ -159,7 +159,7 @@ export class DbPediaService {
 
     public getIntancesCount(): void {
         this.setLoading(true);
-        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getNumberOfInstancesQuery() + '&format=json&timeoutLimit=' + this.timeoutms )
+        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getNumberOfInstancesQuery() + '&format=json&timeout=' + this.timeoutms )
             .subscribe(
                 (response) => {
 
@@ -184,7 +184,7 @@ export class DbPediaService {
 
     public getPropertyMainConceptList(): Observable<Map<string, string>> {
         this.setLoading(true);
-        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getPropertyMainConceptListQuery() + '&format=json&timeoutLimit=' + this.timeoutms )
+        return this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getPropertyMainConceptListQuery() + '&format=json&timeout=' + this.timeoutms )
             .pipe(map(
                 (data) => {
                     let properties = new Map();
@@ -207,7 +207,7 @@ export class DbPediaService {
 
     public getInstancePropertyValue(): void {
         this.setLoading(true);
-        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getInstancePropertyValueQuery() + '&format=json&timeoutLimit=' + this.timeoutms )
+        this.http.get<any>(this.endpoint + '?default-graph-uri=http://dbpedia.org&query=' + this.getInstancePropertyValueQuery() + '&format=json&timeout=' + this.timeoutms )
             .subscribe(
                 (response) => {
 
