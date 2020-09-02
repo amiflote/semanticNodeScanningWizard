@@ -43,12 +43,12 @@ export class DbPediaService {
             .subscribe(
                 (response) => {
 
-                    let givenNode = this.dataGraphService.findNode(this.mainConceptUri);
+                    let mainNode = this.dataGraphService.findNode(this.mainConceptUri);
 
                     response.results.bindings.forEach(
                         (b) => {
                             let nuNode = this.dataGraphService.addNode(b.datanode.value, NodeType.Instance, b.label.value);
-                            this.dataGraphService.addLink(nuNode, givenNode, 'rdf:type', 'tipo');
+                            this.dataGraphService.addLink(nuNode, mainNode, 'rdf:type', 'tipo');
                         });
 
                     this.dataGraphService.canRefreshGraph();
@@ -241,7 +241,7 @@ export class DbPediaService {
     }
 
     private getFilteredConceptsQuery(filter: string): string {
-        return 'select distinct ?concept ?label where { ?x rdf:type ?concept. FILTER regex(?concept, "' + filter + '", "i"). ?concept rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") } LIMIT ' + this.queryLimit
+        return 'select distinct ?concept ?label where { ?x rdf:type ?concept. FILTER regex(?label, "' + filter + '", "i"). ?concept rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") } LIMIT ' + this.queryLimit
     }
 
     private getRelationsGivenUriNodeQuery(uriNode: string): string {
@@ -249,15 +249,15 @@ export class DbPediaService {
     }
 
     private getNumberOfInstancesQuery(): string {
-        return 'select count (distinct *) as ?count where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a ' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.mainConceptUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i"). ?datanode rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") }'
+        return 'select count (distinct *) as ?count where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a ' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.mainConceptUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?label, "' + this.literalTyped + '", "i"). ?datanode rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") }'
     }
 
     private getInstancesQuery(): string {
-        return 'select distinct ?datanode ?label where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.mainConceptUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?value, "' + this.literalTyped + '", "i"). ?datanode rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") }'
+        return 'select distinct ?datanode ?label where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.mainConceptUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + ' ?value. FILTER regex(?label, "' + this.literalTyped + '", "i"). ?datanode rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") }'
     }
 
     private getPropertyMainConceptListQuery(): string {
-        return 'select distinct ?property ?label where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.mainConceptUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + '?value. FILTER regex(?value, "' + this.literalTyped + '", "i"). ?datanode ?property ?value2. FILTER isLiteral(?value2). ?property rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") } LIMIT ' + this.queryLimit;
+        return 'select distinct ?property ?label where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.mainConceptUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + '?value. FILTER regex(?label, "' + this.literalTyped + '", "i"). ?datanode ?property ?value2. FILTER isLiteral(?value2). ?property rdfs:label ?label . FILTER langMatches(lang(?label),"' + this.language + '") } LIMIT ' + this.queryLimit;
     }
 
     private getDisplayLabel(uri: string): string {

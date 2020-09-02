@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import { Link, NodeState } from '../../../d3';
+import { Link } from '../../../d3';
 import { DataGraphService } from 'src/app/services/data-graph.service';
 
 @Component({
@@ -10,20 +10,10 @@ import { DataGraphService } from 'src/app/services/data-graph.service';
 export class LinkVisualComponent implements OnInit {
   @Input('linkVisual') link: Link;
 
-  constructor(private dataGraphService: DataGraphService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    // let source = this.dataGraphService.positions.find(n => n.name == this.link.source.name);
-    // let target = this.dataGraphService.positions.find(n => n.name == this.link.target.name);
 
-    // this.link.source.x = source.x;
-    // this.link.source.y = source.y;
-    // this.link.target.x = target.x;
-    // this.link.target.y = target.y;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // console.log('Himaniac');
   }
 
   getXPositionName(): number {
@@ -35,6 +25,6 @@ export class LinkVisualComponent implements OnInit {
   }
 
   showLink(): boolean {
-    return this.link.source.state != NodeState.Oculto && this.link.target.state != NodeState.Oculto;
+    return !this.link.source.hidden && !this.link.target.hidden;
   }
 }

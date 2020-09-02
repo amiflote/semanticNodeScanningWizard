@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Node, NodeType, NodeState } from '../../../d3';
+import { Node, NodeType, RelationState } from '../../../d3';
 import { DbPediaService } from 'src/app/services/dbpedia.service';
 import { DataGraphService } from 'src/app/services/data-graph.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -12,7 +12,6 @@ import { ChooseObjectDialogComponent, DialogChooseObject, DialogType } from '../
 })
 export class NodeVisualComponent implements OnInit {
   @Input('nodeVisual') node: Node;
-  literal: string = '';
   linkLabelRelated: string;
 
   constructor(private dbPediaService: DbPediaService,
@@ -26,16 +25,20 @@ export class NodeVisualComponent implements OnInit {
   }
 
   onArrowClick() {
-    this.dbPediaService.getRelations(this.node.name);
-    this.node.state = NodeState.RelacionesExpandidas;
+    if (this.node.relationState == RelationState.SinExplorar) {
+      this.dbPediaService.getRelations(this.node.name);
+      this.node.relationState = RelationState.Exploradas;
+    } else {
+      this.node.relationState = RelationState.Exploradas;
+      this.dataGraphService.setRelationNodesVisibility(false);
+    }
   }
 
   showArrow(): boolean {
-    return this.node.type == NodeType.ConceptoPrincipal && this.node.state != NodeState.RelacionesExpandidas;
+    return this.node.type == NodeType.ConceptoPrincipal && this.node.relationState != RelationState.Exploradas;
   }
 
   selectNode(): void {
-
     if (this.node.type == NodeType.SinExplorar) {
       this.dbPediaService.relationSelected = this.node.name;
       this.openChooseConceptDialog();
@@ -44,6 +47,9 @@ export class NodeVisualComponent implements OnInit {
     } else if (this.node.type == NodeType.InstanceCount) {
       this.dataGraphService.hideNode(this.node.id);
       this.dbPediaService.getInstances();
+    } else if (this.node.type == NodeType.Concepto) {
+      this.dbPediaService.relationSelected = this.node.name;
+      this.dataGraphService.setRelationNodesVisibility(true, this.node.id);
     }
   }
 
@@ -63,7 +69,10 @@ export class NodeVisualComponent implements OnInit {
   }
 
   showDataBtn(): boolean {
-    return this.node.type == NodeType.Concepto || this.node.type == NodeType.LiteralRelleno || this.node.type == NodeType.ConceptoPrincipal || this.node.type == NodeType.PropiedadConceptoPrincipal;
+    return this.node.type == NodeType.Concepto 
+    || this.node.type == NodeType.LiteralRelleno 
+    || (this.node.type == NodeType.ConceptoPrincipal && this.dataGraphService.IsThereVisibleInstanceNodes())
+    || this.node.type == NodeType.PropiedadConceptoPrincipal;
   }
 
   openChooseConceptDialog(): void {
@@ -86,6 +95,7 @@ export class NodeVisualComponent implements OnInit {
           dialogRef.afterClosed().subscribe(
             (result: [string, string]) => {
               if (result) {
+                this.dataGraphService.setRelationNodesVisibility(true);
                 let nuNode = this.dataGraphService.addNode(result[1], NodeType.Concepto, result[0]);
                 this.dataGraphService.copyLinkWithMainConcept(nuNode, this.node)
                 this.dbPediaService.relationConceptSelected = result[1];
@@ -156,7 +166,7 @@ export class NodeVisualComponent implements OnInit {
   }
 
   showNode(): boolean {
-    return this.node.state != NodeState.Oculto;
+    return !this.node.hidden;
   }
 
   openChoosePropertyMainConceptDialog(): void {

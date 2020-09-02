@@ -11,10 +11,10 @@ export enum NodeType {
   PropiedadConceptoPrincipal
 }
 
-export enum NodeState {
-  Nuevo,
-  RelacionesExpandidas,
-  Oculto
+export enum RelationState {
+  SinExplorar,
+  Exploradas,
+  Ocultas
 }
 
 export class Node implements d3.SimulationNodeDatum {
@@ -36,15 +36,19 @@ export class Node implements d3.SimulationNodeDatum {
   };
   linkCount: number = 0;
   type: NodeType;
-  state: NodeState;
+  // state: NodeState;
+  hidden: boolean;
   label: string;
+  relationState: RelationState;
 
   constructor(id, type: NodeType, name, label: string) {
     this.id = id;
     this.type = type;
     this.name = name;
-    this.state = NodeState.Nuevo;
+    // this.state = NodeState.Nuevo;
+    this.hidden = false;
     this.label = label;
+    this.relationState = RelationState.SinExplorar;
   }
 
   normal = () => {
