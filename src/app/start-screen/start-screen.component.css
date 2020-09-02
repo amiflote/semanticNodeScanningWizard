@@ -26,3 +26,7 @@
 .sidenav-button {
   background-color: rgb(163, 198, 217);
 }
+
+.mat-form-field {
+  width: 100%;
+}
