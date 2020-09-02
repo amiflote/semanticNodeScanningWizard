@@ -41,11 +41,12 @@
 } */
 
 .mat-select-panel {
-    max-width: 200px !important;
-    min-width: 100px !important;
+    /* max-width: 200px !important;
+    min-width: 100px !important; */
     background-color: khaki;
     border-radius: 10px;
     margin: 10px;
+    width: 100%;
     /* position: relative;
     top: 120px;
     left: 200px; */
