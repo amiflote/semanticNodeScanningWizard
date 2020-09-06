@@ -22,7 +22,7 @@ export class ChooseObjectDialogComponent implements OnInit {
 
   optionSelected: string;
   literal: string;
-  objectsKeys: string[];
+  objectsKeys: string[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<AppComponent>,
@@ -44,8 +44,10 @@ export class ChooseObjectDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.data.type == DialogType.PickFromList && this.data.values)
-      this.objectsKeys = Array.from(this.data.values.keys());
+    if (this.data.type == DialogType.PickFromList && this.data.values) {
+      let toUpper = Array.from(this.data.values.keys()).sort();
+      toUpper.forEach(s => this.objectsKeys.push(s.charAt(0).toUpperCase() + s.slice(1)));
+    }
   }
 
   onOptionSelected(object) {
