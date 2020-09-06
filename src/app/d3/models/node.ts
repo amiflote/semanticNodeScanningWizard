@@ -8,7 +8,8 @@ export enum NodeType {
   LiteralRelleno,
   InstanceCount,
   Instance,
-  PropiedadConceptoPrincipal
+  PropiedadConceptoPrincipal,
+  ValorPropiedadInstancia
 }
 
 export enum RelationState {

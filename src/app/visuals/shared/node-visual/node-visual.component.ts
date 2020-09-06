@@ -138,7 +138,7 @@ export class NodeVisualComponent implements OnInit {
   }
 
   showCircle(): boolean {
-    return this.node.type != NodeType.LiteralVacio && this.node.type != NodeType.LiteralRelleno;
+    return this.node.type != NodeType.LiteralVacio && this.node.type != NodeType.LiteralRelleno && this.node.type != NodeType.ValorPropiedadInstancia;
   }
 
   openTypeFilterDialog(): void {
