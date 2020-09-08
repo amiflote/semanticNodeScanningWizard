@@ -69,7 +69,7 @@ export class DbPediaService {
 
                     data.results.bindings.forEach(
                         (o) => {
-                            objects.set(o.label.value, o.concept.value);
+                            objects.set(this.capitalizeFirstLetter(o.label.value), o.concept.value);
                         }
                     );
 
@@ -92,7 +92,7 @@ export class DbPediaService {
 
                     data.results.bindings.forEach(
                         (b) => {
-                            properties.set(this.getDisplayLabel(b.property.value), b.property.value);
+                            properties.set(this.capitalizeFirstLetter(this.getDisplayLabel(b.property.value)), b.property.value);
                         }
                     );
 
@@ -115,7 +115,7 @@ export class DbPediaService {
 
                     data.results.bindings.forEach(
                         (b) => {
-                            concepts.set(b.label.value, b.concept.value);
+                            concepts.set(this.capitalizeFirstLetter(b.label.value), b.concept.value);
                         }
                     );
                     
@@ -191,7 +191,7 @@ export class DbPediaService {
 
                     data.results.bindings.forEach(
                         (b) => {
-                            properties.set(b.propertylabel.value, b.property.value);
+                            properties.set(this.capitalizeFirstLetter(b.propertylabel.value), b.property.value);
                         }
                     );
                     
@@ -266,5 +266,9 @@ export class DbPediaService {
 
     private getInstancePropertyValueQuery(): string {
         return 'select distinct ?datanode ?value2 where { ?datanode ' + encodeURIComponent('<' + this.relationSelected + '>') + ' ?anotherdatanode. ?anotherdatanode a' + encodeURIComponent('<' + this.relationConceptSelected + '>') + '. ?datanode a ' + encodeURIComponent('<' + this.mainConceptUri + '>') + '. ?anotherdatanode ' + encodeURIComponent('<' + this.propertyConceptSelected + '>') + '?value. FILTER regex(?anotherdatanodelabel, "' + this.literalTyped + '", "i"). ?datanode ' + encodeURIComponent('<' + this.propertyMainConceptSelected + '>') + ' ?value2. FILTER isLiteral(?value2). ?datanode rdfs:label ?datanodelabel . ?property rdfs:label ?propertylabel . ?anotherdatanode rdfs:label ?anotherdatanodelabel .  FILTER langMatches(lang(?datanodelabel),"' + this.language + '"). FILTER langMatches(lang(?anotherdatanodelabel),"' + this.language + '"). FILTER langMatches(lang(?propertylabel),"' + this.language + '") }'
+    }
+
+    private capitalizeFirstLetter(s: string): string {
+        return s.charAt(0).toUpperCase() + s.slice(1);
     }
 }
